@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    //跳过node_modules检测错误
+    "skipLibCheck": true,
+    "noEmit": false,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "target": "es2020",
+    "esModuleInterop": true
+  }
+}
