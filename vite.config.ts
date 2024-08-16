@@ -8,6 +8,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { cwd } from 'node:process'
+import ElementPlus from 'unplugin-element-plus/vite'
 const envPrefix = 'DB_'
 export default defineConfig(({ command, mode }) => {
   const resloveProxy = (mode: string) => {
@@ -56,7 +57,9 @@ export default defineConfig(({ command, mode }) => {
       Components({
         resolvers: [ElementPlusResolver()]
       }),
-      viteMockServe()
+      viteMockServe(),
+      //按需引入ElementUI样式
+      ElementPlus({})
     ]
   }
 })
