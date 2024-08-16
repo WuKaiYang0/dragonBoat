@@ -1,4 +1,5 @@
 {
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "type/**/*"],
   "compilerOptions": {
     //跳过node_modules检测错误
     "skipLibCheck": true,
@@ -7,6 +8,19 @@
     "moduleResolution": "node",
     "target": "es2020",
     "esModuleInterop": true,
-    "types": ["element-plus/global"]
+    "types": ["element-plus/global"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@component/*": ["./src/component/*"],
+      "@view/*": ["./src/view/*"],
+      "@router/*": ["./src/router/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@type/*": ["src/type/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@http/*": ["./src/http/*"]
+    }
   }
 }
