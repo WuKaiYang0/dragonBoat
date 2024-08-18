@@ -1,5 +1,5 @@
 {
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "type/**/*"],
+  "include": ["src/**/*", "src/**/*.vue", "type/**/*"],
   "compilerOptions": {
     //跳过node_modules检测错误
     "skipLibCheck": true,
