@@ -30,7 +30,7 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         '@': resolve(__dirname, './src'),
-        '@component': resolve(__dirname, './src/components'),
+        '@components': resolve(__dirname, './src/components'),
         '@view': resolve(__dirname, './src/view'),
         '@router': resolve(__dirname, './src/router'),
         '@assets': resolve(__dirname, './src/assets'),
