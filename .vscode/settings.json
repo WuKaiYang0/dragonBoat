@@ -17,5 +17,11 @@
     "yaml"
   ],
 
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "rest-client.environmentVariables": {
+    "$shared": {},
+    "dev": {
+      "url": "http://dragonboat.scnu.edu.cn"
+    }
+  }
 }

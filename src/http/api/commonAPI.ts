@@ -1,12 +1,12 @@
-import { TeamRegister } from '@/type/team/type'
+import { TeamRegister } from '@/typings/team/index'
 import axios from '../../utils/request'
-import { BackDataFormat } from '@/type/common'
+import { BackDataFormat } from '@/typings/common'
 /**获取邮箱验证码 */
-export const getLoginCodeByEmail = (email: string) =>
+export const getLoginVerifyByEmail = (email: string) =>
   axios.get<BackDataFormat<null>>(`/login/getVerify?email=${email}`)
 /**通过邮箱登录 */
 export const postLoginByEmail = (form: { email: string; verify: string }) =>
-  axios.post<BackDataFormat<{ token: string }>>('/login/byemail', form, {
+  axios.post<BackDataFormat<{ token: string }>>('/login/byEmail', form, {
     headers: {
       'content-type': 'application/json'
     }
@@ -25,7 +25,7 @@ export const registerTeam = (form: TeamRegister) =>
       'content-type': 'application/json'
     }
   })
-
+/**测试 */
 export const test = (body: Record<string, string | number>) =>
   axios.post('/post', body, {
     headers: {

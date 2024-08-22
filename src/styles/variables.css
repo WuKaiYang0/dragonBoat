@@ -1,0 +1,13 @@
+:root {
+  --login-input-width: 340px;
+  --login-btn-gap: 25px;
+  --main-side-width: 200px;
+  --main-head-icon-size: 20px;
+  --main-head-height: 48px;
+  --main-background-color: #ffffff;
+  --main-tag-border-color: #555555;
+  --main-tag-chosen-backgroundColor: #4060c7;
+  --main-tag-chosen-color: var(--main-background-color);
+  --main-tag-basic-color: #555555;
+  --main-tag-basic-backgroundColor: var(--main-background-color);
+}

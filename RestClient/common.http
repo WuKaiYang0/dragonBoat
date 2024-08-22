@@ -1,0 +1,2 @@
+### 邮箱登录获取验证码
+GET {{url}}/login/getVerify?email=1272610480@qq.com HTTP/1.1

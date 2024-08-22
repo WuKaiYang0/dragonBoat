@@ -1,6 +1,6 @@
-import * as common from './api/common'
-import { getCurrentInstance } from 'vue'
-export const requests = {
-  common
+import * as commonAPI from './api/commonAPI'
+import * as teamAPI from './api/teamAPI'
+export default {
+  commonAPI,
+  teamAPI
 }
-export default getCurrentInstance().appContext.config.globalProperties.$requests
