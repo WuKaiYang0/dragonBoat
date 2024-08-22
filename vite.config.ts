@@ -9,9 +9,24 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { cwd } from 'node:process'
 import ElementPlus from 'unplugin-element-plus/vite'
+import fs from 'fs'
 const envPrefix = 'DB_'
+//解析src下所有目录，默认别名@ -> src;另外，tsconfig.json文件需要手动添加paths。
+const resolveAlias = (prefix: string) => {
+  let o = {}
+  const dirNames = fs
+    .readdirSync('./src', { withFileTypes: true })
+    .filter((item) => item.isDirectory())
+    .map((item) => item.name)
+    .forEach((name) => {
+      o[`${prefix}${name}`] = resolve(__dirname, `./src/${name}`)
+    })
+  o[prefix] = resolve(__dirname, './src')
+  return o
+}
 export default defineConfig(({ command, mode }) => {
-  const resloveProxy = (mode: string) => {
+  //在不同的环境（命令）下，通过不同的接口前缀，代理不同的接口地址
+  const resolveProxy = (mode: string) => {
     const o = {}
     const p = `/${mode}`
     o[p] = {
@@ -25,20 +40,10 @@ export default defineConfig(({ command, mode }) => {
     envPrefix,
     server: {
       port: parseInt(loadEnv(mode, cwd(), envPrefix).DB_LOCAL_PORT),
-      proxy: resloveProxy(mode)
+      proxy: resolveProxy(mode)
     },
     resolve: {
-      alias: {
-        '@': resolve(__dirname, './src'),
-        '@components': resolve(__dirname, './src/components'),
-        '@view': resolve(__dirname, './src/view'),
-        '@router': resolve(__dirname, './src/router'),
-        '@assets': resolve(__dirname, './src/assets'),
-        '@styles': resolve(__dirname, './src/styles'),
-        '@utils': resolve(__dirname, './src/utils'),
-        '@http': resolve(__dirname, './src/http'),
-        '@stores': resolve(__dirname, './src/stores')
-      }
+      alias: resolveAlias('@')
     },
     css: {
       preprocessorOptions: {},
@@ -52,10 +57,16 @@ export default defineConfig(({ command, mode }) => {
       }),
       vue(),
       AutoImport({
-        resolvers: [ElementPlusResolver()]
+        resolvers: [
+          // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
+          ElementPlusResolver()
+        ]
       }),
       Components({
-        resolvers: [ElementPlusResolver()]
+        resolvers: [
+          //自动注册 Element Plus 组件
+          ElementPlusResolver()
+        ]
       }),
       viteMockServe(),
       //按需引入ElementUI样式

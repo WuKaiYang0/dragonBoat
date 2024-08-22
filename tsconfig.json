@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*", "src/**/*.vue", "type/**/*"],
+  "include": ["src/**/*", "src/**/*.vue", "typings/**/*"],
   "compilerOptions": {
     //跳过node_modules检测错误
     "skipLibCheck": true,
@@ -18,7 +18,7 @@
       "@assets/*": ["./src/assets/*"],
       "@utils/*": ["./src/utils/*"],
       "@styles/*": ["./src/styles/*"],
-      "@type/*": ["src/typings/*"],
+      "@typings/*": ["./src/typings/*"],
       "@stores/*": ["./src/stores/*"],
       "@http/*": ["./src/http/*"]
     }
