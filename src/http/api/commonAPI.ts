@@ -1,6 +1,6 @@
 import { TeamRegister } from '@/typings/team/index'
 import axios from '../../utils/request'
-import { BackDataFormat } from '@/typings/common'
+import { AllDataInCompItem, BackDataFormat } from '@/typings/common'
 /**获取邮箱验证码 */
 export const getLoginVerifyByEmail = (email: string) =>
   axios.get<BackDataFormat<null>>(`/login/getVerify?email=${email}`)
@@ -25,6 +25,19 @@ export const registerTeam = (form: TeamRegister) =>
       'content-type': 'application/json'
     }
   })
+export const postQueryCompetition = (form: {
+  page: number
+  row: number
+  name?: string
+  location?: string
+  introduction?: string
+}) =>
+  axios.post<BackDataFormat<AllDataInCompItem[]>>('/competition/queryCom', form, {
+    headers: {
+      'content-type': 'application/json'
+    }
+  })
+
 /**测试 */
 export const test = (body: Record<string, string | number>) =>
   axios.post('/post', body, {

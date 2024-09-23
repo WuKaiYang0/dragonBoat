@@ -10,6 +10,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { cwd } from 'node:process'
 import ElementPlus from 'unplugin-element-plus/vite'
 import fs from 'fs'
+import dayjs from 'dayjs'
 const envPrefix = 'DB_'
 //解析src下所有目录，默认别名@ -> src;另外，tsconfig.json文件需要手动添加paths。
 const resolveAlias = (prefix: string) => {
@@ -24,6 +25,7 @@ const resolveAlias = (prefix: string) => {
   o[prefix] = resolve(__dirname, './src')
   return o
 }
+
 export default defineConfig(({ command, mode }) => {
   //在不同的环境（命令）下，通过不同的接口前缀，代理不同的接口地址
   const resolveProxy = (mode: string) => {
@@ -71,6 +73,9 @@ export default defineConfig(({ command, mode }) => {
       viteMockServe(),
       //按需引入ElementUI样式
       ElementPlus({})
-    ]
+    ],
+    build: {
+      assetsDir: `asset-${dayjs().format('YYYY-MM-DD——hh.mm.ss')}`
+    }
   }
 })

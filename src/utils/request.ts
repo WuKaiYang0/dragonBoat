@@ -1,4 +1,6 @@
 import Axios from 'axios'
+import { getItem } from './localStorage'
+import { LocalStorageKey } from '@/typings/enums'
 console.log(import.meta.env.DB_LOCAL_URL)
 
 const axios = Axios.create({
@@ -8,6 +10,10 @@ const axios = Axios.create({
 axios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
+    const token = getItem(LocalStorageKey.TOKEN)
+    if (token) {
+      config.headers.Authorization = token
+    }
     return config
   },
   function (error) {

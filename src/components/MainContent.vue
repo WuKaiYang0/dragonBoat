@@ -4,22 +4,27 @@
     <main>
       <div class="content-wrapper">
         <div class="tags">
-          <el-icon icon v-if="!store.collapse" @click="store.changeCollapse()"><Fold /></el-icon>
-          <el-icon icon v-else @click="store.changeCollapse()"><Expand /></el-icon>
+          <el-icon icon v-if="!otherStore.collapse" @click="otherStore.changeCollapse()"
+            ><Fold
+          /></el-icon>
+          <el-icon icon v-else @click="otherStore.changeCollapse()"><Expand /></el-icon>
           <el-divider direction="vertical" />
-          <el-check-tag
-            :checked="tag.status"
-            tag
-            v-for="tag in dynamicTags"
-            :key="tag.val"
-            closable
-            :disable-transitions="false"
-            @close="handleClose(tag)"
-            @change="onChange(tag)"
+          <el-tag
+            :closable="index === 0 ? false : true"
+            effect="plain"
+            v-for="(tag, index) in dynamicTags"
+            class="default"
+            :class="{ active: tag.active }"
+            @close="handleClose(tag, index)"
+            @click="handleClick(tag)"
           >
-            {{ tag.val }}
-          </el-check-tag>
+            <ElIcon>
+              <component :is="tag.meta.icon"></component>
+            </ElIcon>
+            <span>{{ tag.meta.title }}</span>
+          </el-tag>
         </div>
+        <CompTemp get></CompTemp>
       </div>
     </main>
   </div>
@@ -27,21 +32,56 @@
 
 <script setup lang="ts">
 import Sidebar from './Sidebar.vue'
-import { Fold, Expand } from '@element-plus/icons-vue'
-import { useUserStore } from '@/stores/user'
-import { ref } from 'vue'
-const store = useUserStore()
-const dynamicTags = ref([
-  { val: 'tag 1', status: true },
-  { val: 'tag 2', status: false },
-  { val: 'tag 3', status: false }
-])
-const handleClose = (tag: any) => {
-  dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+import CompTemp from '@components/CompTemplate.vue'
+
+import { useOtherStore } from '@/stores/other'
+import { ref, watch } from 'vue'
+import { Meta } from '@/typings/common'
+const otherStore = useOtherStore()
+type TagSetting = { active: boolean; fullPath: string; meta: Meta }
+const dynamicTags = ref<TagSetting[]>([])
+const handleClick = (tag: TagSetting) => {
+  dynamicTags.value.forEach((item) => (item.active = false))
+  tag.active = true
+  otherStore.setActiveRoute({ fullPath: tag.fullPath, meta: tag.meta })
+  otherStore.setActivePath(tag.fullPath)
 }
-const onChange = (tag: { val: string; status: boolean }) => {
-  dynamicTags.value.forEach((item) => (item.status = false))
-  tag.status = true
+//监听otherStore仓库中Getter数据
+watch(
+  () => otherStore.activePath,
+  () => {
+    //在捕获activePath数据更改之前，此时otherStore.activeRoute已更改
+    const newTag: TagSetting = {
+      active: false,
+      fullPath: otherStore.activeRoute.fullPath,
+      meta: otherStore.activeRoute.meta
+    }
+    //看是否存在，存在就取
+    const currentTag = dynamicTags.value.find((t) => t.fullPath === newTag.fullPath)
+    if (!currentTag) {
+      //说明不存在
+      dynamicTags.value.push(newTag)
+      handleClick(newTag)
+    } else {
+      //存在
+      handleClick(currentTag)
+    }
+  },
+  { immediate: true }
+)
+const handleClose = (tag: TagSetting, index: number) => {
+  //第一个是首页，不能被del
+  if (index > 0) {
+    //查找当前Tag在dynamicTags的索引值
+    const currentTagIndex = dynamicTags.value.findIndex((tag) => tag.active === true)
+    console.log(currentTagIndex)
+    //del Tag
+    dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+    if (currentTagIndex >= index) {
+      handleClick(dynamicTags.value[currentTagIndex - 1])
+    }
+    //若前面条件不满足，只删除了没有选择的标签...
+  }
 }
 </script>
 
@@ -63,14 +103,18 @@ const onChange = (tag: { val: string; status: boolean }) => {
         display: flex;
         align-items: center;
         padding-left: 5px;
-        [tag] {
+        .default {
           box-sizing: border-box;
-          height: 100%;
-          color: var(--main-tag-color);
-          font-weight: unset;
+          height: calc(100% - 3px);
+          color: #4060c7;
           margin-right: 10px;
-          border: 1px solid var(--main-tag-basic-color);
-          background-color: var(--main-tag-basic-backgroundColor);
+          border: 1px solid #4060c7;
+          --el-color-primary: #4060c7;
+        }
+        .active {
+          color: #ffffff !important;
+          background-color: #4060c7 !important;
+          --el-color-primary: #4060c7 !important;
         }
       }
     }

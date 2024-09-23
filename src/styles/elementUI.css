@@ -2,8 +2,11 @@
 .el-button {
   backface-visibility: hidden;
 }
-.is-checked {
-  background-color: var(--main-tag-chosen-backgroundColor) !important;
-  border: unset !important;
-  color: var(--main-tag-chosen-color) !important;
+.active .el-tag__close {
+  color: #ffffff !important;
+  /* color: #4060c7 !important; */
+}
+.default .el-tag__content {
+  display: flex;
+  align-items: center;
 }

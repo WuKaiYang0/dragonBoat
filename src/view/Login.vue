@@ -154,8 +154,8 @@ import { User, Lock, DocumentAdd, UserFilled, Key } from '@element-plus/icons-vu
 import dragonSvg from '@assets/svgs/dragboat_logo.svg'
 import { ElMessage, FormInstance } from 'element-plus'
 import { BackDataFormat } from '@/typings/common/index'
-import { AxiosResponse } from 'axios'
-import { setItem } from '@/utils/localStorage'
+import { AxiosError, AxiosResponse } from 'axios'
+import { getItem, setItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
 import { useUserStore } from '@/stores/user'
 const value1 = ref(Date.now())
@@ -169,6 +169,7 @@ const animationRef = ref<HTMLElement>()
 const sendCodeIsDisable = ref(false)
 type LoginMode = '邮箱' | '账号'
 let loginMode = ref<LoginMode>('账号')
+const store = useUserStore()
 const c = {
   邮箱: {
     class1: 'clockwise90',
@@ -225,6 +226,24 @@ const submitForm = async (mode: LoginMode) => {
           })
           setItem(LocalStorageKey.TOKEN, data.token)
           useUserStore().setToken(data.token)
+          router.push('/home')
+          // $requests.teamAPI
+          //   .getTeamInfo(getItem(LocalStorageKey.TOKEN))
+          //   .then(({ data: { code, data, message } }) => {
+          //     if (code == 200) {
+          //       store.setUserInfo(data)
+          //       router.push('/home')
+          //     } else {
+          //       $message.error({
+          //         message
+          //       })
+          //     }
+          //   })
+          //   .catch((rej: AxiosError) => {
+          //     $message.error({
+          //       message: rej.message
+          //     })
+          //   })
         } else {
           $message.error({
             message: `${mode}或密码错误`,
@@ -260,6 +279,26 @@ const sendCodeHandler = () => {
 }
 onMounted(() => {
   dragonBoatLogo.value.src = dragonSvg
+  const token = getItem(LocalStorageKey.TOKEN) || store.token
+  if (token) {
+    // $requests.teamAPI
+    //   .getTeamInfo(token)
+    //   .then(({ data: { code, data, message } }) => {
+    //     if (code == 200) {
+    //       store.setUserInfo(data)
+    //       router.push('/home')
+    //     } else {
+    //       $message.error({
+    //         message
+    //       })
+    //     }
+    //   })
+    //   .catch((rej: AxiosError) => {
+    //     $message.error({
+    //       message: rej.message
+    //     })
+    //   })
+  }
 })
 </script>
 <style scoped>
