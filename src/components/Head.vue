@@ -17,7 +17,9 @@
         <div class="operation">
           <el-icon icon><Refresh /></el-icon>
           <el-icon icon><Bell /></el-icon>
-          <el-icon icon><FullScreen /></el-icon>
+          <el-icon @click="toggleFullScreen"
+            ><FullScreen v-if="!isFullScreen"></FullScreen> <OffScreen v-else></OffScreen
+          ></el-icon>
         </div>
         <el-divider direction="vertical" />
         <i class="avatar">
@@ -55,19 +57,42 @@
 
 <script setup lang="ts">
 import DragonBoatLogo from '@components/svgs/DragonBoatLogo.vue'
+import FullScreen from './svgs/FullScreen.vue'
+import OffScreen from './svgs/OffScreen.vue'
 import Avatar from '@components/svgs/Avatar.vue'
-import { Refresh, Bell, FullScreen, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
+import { Refresh, Bell, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
 import { useUnitStore } from '@/stores/unit'
 import { useOtherStore } from '@/stores/other'
-import { getCurrentInstance, onMounted, watch, ref, unref } from 'vue'
+import { getCurrentInstance, onMounted, watch, ref, unref, onUnmounted } from 'vue'
 import { delItem, getItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
 import router from '@/router'
-import { ClickOutside as vClickOutside } from 'element-plus'
+import { ClickOutside as vClickOutside, ElLoading } from 'element-plus'
 const { $requests, $message } = getCurrentInstance().appContext.config.globalProperties
 const userStore = useUnitStore()
 const otherStore = useOtherStore()
 const path = ref<string[]>([])
+const isFullScreen = ref(false)
+const toggleFullScreen = () => {
+  if (!document.fullscreenElement) {
+    //关闭全屏
+    document.documentElement.requestFullscreen()
+  } else {
+    //全屏状态
+    document.exitFullscreen()
+  }
+}
+const onfullscreenchange = () => {
+  if (!document.fullscreenElement) {
+    //关闭全屏
+    isFullScreen.value = false
+  } else {
+    //全屏状态
+    isFullScreen.value = true
+  }
+}
+document.addEventListener('fullscreenchange', onfullscreenchange)
+
 watch(
   () => otherStore.activePath,
   (p) => {
@@ -79,11 +104,16 @@ watch(
 )
 //页面刷新的情况下
 const getData = async () => {
-  console.log('getData')
   try {
     const token = getItem(LocalStorageKey.TOKEN)
-    if (!token) return router.replace('/login')
+    if (!token) {
+      router.replace('/login')
+      return
+    }
     if (token) {
+      const loadingInstance = ElLoading.service({
+        text: '正在初始化'
+      })
       const {
         data: { data, code, message }
       } = await $requests.unitAPI.getUnitInfo(token)
@@ -94,6 +124,7 @@ const getData = async () => {
         $message.warning({ message })
         router.replace('/login')
       }
+      loadingInstance.close()
     } else {
       router.replace('/login')
     }
@@ -131,6 +162,9 @@ const logout = async () => {
     $message.error(error.message)
   }
 }
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', onfullscreenchange)
+})
 onMounted(() => {
   getData()
 })
@@ -173,6 +207,7 @@ onMounted(() => {
         justify-content: space-between;
         width: calc(var(--main-head-icon-size) * 4);
         padding: 0 5px;
+        font-size: 20px;
       }
       .avatar {
         font-size: 32px;
