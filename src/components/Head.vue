@@ -104,6 +104,9 @@ watch(
 )
 //页面刷新的情况下
 const getData = async () => {
+  const loadingInstance = ElLoading.service({
+    text: '正在初始化'
+  })
   try {
     const token = getItem(LocalStorageKey.TOKEN)
     if (!token) {
@@ -111,9 +114,6 @@ const getData = async () => {
       return
     }
     if (token) {
-      const loadingInstance = ElLoading.service({
-        text: '正在初始化'
-      })
       const {
         data: { data, code, message }
       } = await $requests.unitAPI.getUnitInfo(token)
@@ -124,7 +124,6 @@ const getData = async () => {
         $message.warning({ message })
         router.replace('/login')
       }
-      loadingInstance.close()
     } else {
       router.replace('/login')
     }
@@ -132,6 +131,10 @@ const getData = async () => {
     $message.error({ message: error.message })
     delItem(LocalStorageKey.TOKEN)
     router.replace('/login')
+  } finally {
+    setTimeout(() => {
+      loadingInstance.close()
+    }, 1000)
   }
 }
 const arrowTrigger = ref(true)
