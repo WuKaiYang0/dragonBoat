@@ -46,9 +46,11 @@
 <script lang="ts" setup>
 import { useOtherStore } from '@/stores/other'
 import { ActiveRoute } from '@/typings/common'
-import { onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { locateRoute } from '@/utils/common'
+import { onMounted, onUnmounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
+const route = useRoute()
 const otherStore = useOtherStore()
 
 const handleOpen = (key: string, keyPath: string[]) => {
@@ -71,6 +73,16 @@ const setSideBarAuto = () => {
     }
   }
 }
+watch(
+  () => route.fullPath,
+  (fullPath) => {
+    const routes = otherStore.menus[0].routes
+    const _pathNameArr = fullPath.replace('/', '').split('/')
+    const { _currentRoute } = locateRoute(routes, _pathNameArr)
+    otherStore.setActiveRoute({ fullPath, meta: _currentRoute.meta })
+    otherStore.setActivePath(fullPath)
+  }
+)
 onMounted(() => {
   window.addEventListener('resize', setSideBarAuto)
 })

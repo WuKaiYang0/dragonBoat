@@ -10,7 +10,7 @@
       <div class="bread">
         <el-divider direction="vertical" />
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item v-for="p in path">{{ p }}</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="p in routeTitleArr">{{ p }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <div class="operations">
@@ -68,10 +68,12 @@ import { delItem, getItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
 import router from '@/router'
 import { ClickOutside as vClickOutside, ElLoading } from 'element-plus'
+import { Route } from '@/typings/common'
+import { locateRoute } from '@/utils/common'
 const { $requests, $message } = getCurrentInstance().appContext.config.globalProperties
 const userStore = useUnitStore()
 const otherStore = useOtherStore()
-const path = ref<string[]>([])
+const routeTitleArr = ref<string[]>([])
 const isFullScreen = ref(false)
 const toggleFullScreen = () => {
   if (!document.fullscreenElement) {
@@ -91,12 +93,15 @@ const onfullscreenchange = () => {
     isFullScreen.value = true
   }
 }
-document.addEventListener('fullscreenchange', onfullscreenchange)
 
+document.addEventListener('fullscreenchange', onfullscreenchange)
 watch(
   () => otherStore.activePath,
   (p) => {
-    path.value = p.replace('/', '').split('/')
+    const routes = otherStore.menus[0].routes
+    const _pathNameArr = p.replace('/', '').split('/')
+    const { _routeTitleArr } = locateRoute(routes, _pathNameArr)
+    routeTitleArr.value = _routeTitleArr
   },
   {
     immediate: true
