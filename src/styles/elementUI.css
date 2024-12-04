@@ -1,0 +1,38 @@
+.el-input__wrapper,
+.el-button {
+  backface-visibility: hidden;
+}
+.active .el-tag__close {
+  color: #ffffff !important;
+  /* color: #4060c7 !important; */
+}
+.default .el-tag__content {
+  display: flex;
+  align-items: center;
+}
+.el-collapse-item {
+  margin-bottom: 10px;
+}
+.unit-team .el-collapse-item__content {
+  padding-bottom: unset;
+}
+.el-table--border th.el-table__cell {
+  border: unset;
+}
+/*element ui 文本框*/
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--Theme-Color) inset !important;
+}
+/*element ui 日期框*/
+.el-range-editor.is-active,
+.el-range-editor.is-active:hover {
+  box-shadow: 0 0 0 1px var(--Theme-Color) inset !important;
+}
+/*element ui 下拉框*/
+.el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--Theme-Color) inset !important;
+}
+/*element ui pagination按钮*/
+.el-select-dropdown__item.is-selected {
+  color: var(--Theme-Color) !important;
+}

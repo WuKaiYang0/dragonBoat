@@ -1,0 +1,11 @@
+### 邮箱登录获取验证码
+GET {{url}}/login/getVerify?email=1272610480@qq.com HTTP/1.1
+
+### 登录
+POST {{url}}/login/byAccount HTTP/1.1
+Content-Type: 'application/json'
+
+{
+    "account": "qwe",
+    "password": "qwe"
+}

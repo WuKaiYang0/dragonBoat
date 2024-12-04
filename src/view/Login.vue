@@ -230,7 +230,6 @@ const submitForm = async (mode: LoginMode) => {
           data: { code, message, data }
         } = res
         if (code == 200) {
-          loading.value = false
           $message.success({
             message: '登录成功'
           })
@@ -243,7 +242,7 @@ const submitForm = async (mode: LoginMode) => {
             plain: true
           })
         }
-        console.log('submit!')
+        loading.value = false
       } else {
         console.log('error submit!', fields)
       }
@@ -253,6 +252,7 @@ const submitForm = async (mode: LoginMode) => {
       type: 'error',
       message: error.message
     })
+    loading.value = false
   }
 }
 // import { getLoginCodeByEmail, postLoginByAccount, postLoginByEmail } from '@http/index'

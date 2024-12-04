@@ -1,0 +1,26 @@
+{
+  "include": ["src/**/*", "src/**/*.vue", "typings/**/*"],
+  "compilerOptions": {
+    //跳过node_modules检测错误
+    "skipLibCheck": true,
+    "noEmit": false,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "types": ["element-plus/global"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@view/*": ["./src/view/*"],
+      "@router/*": ["./src/router/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@typings/*": ["./src/typings/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@http/*": ["./src/http/*"]
+    }
+  }
+}

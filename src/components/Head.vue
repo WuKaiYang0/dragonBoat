@@ -1,6 +1,6 @@
 <template>
   <div class="head">
-    <div class="head-left">
+    <div class="head-left" @click="router.replace({ name: 'home' })">
       <i class="logo-box">
         <DragonBoatLogo></DragonBoatLogo>
       </i>
@@ -191,7 +191,8 @@ onMounted(() => {
     align-items: center;
     color: rgba(0, 0, 0, 0.6);
     padding-left: var(--el-menu-base-level-padding);
-
+    box-sizing: border-box;
+    cursor: pointer;
     .logo-box {
       font-size: 32px;
       margin-right: 5px;
