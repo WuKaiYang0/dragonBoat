@@ -1,33 +1,40 @@
-import { Route } from '@/typings/common'
-import { createRouter, createWebHistory } from 'vue-router'
+import { useOtherStore } from '@/stores/other'
+import { useUserStore } from '@/stores/user'
+import type { Route } from '@/typings/common'
+import { locateRoute } from '@/utils/common'
+import { watch } from 'vue'
+import { createRouter, createWebHistory, useRoute } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '/',
+      meta: {},
       component: () => import('@view/Home.vue'),
       redirect: '/home',
       children: [
         {
-          name: 'home',
+          name: 'Home',
           path: '/home',
+          meta: { title: '首页', icon: 'Location' },
           // component: () => import('@view/Home.vue')
           component: () => import('@components/CompTemplate.vue')
         },
         {
-          name: 'teamManagement',
+          name: 'TeamManagement',
           path: 'teamManagement',
+          meta: { title: '队伍管理', icon: 'Location' },
           component: () => import('@/view/TeamManagement/index.vue')
         }
       ]
     },
     {
-      name: 'register',
+      name: 'Register',
       path: '/register',
       component: () => import('@view/Register.vue')
     },
     {
-      name: 'login',
+      name: 'Login',
       path: '/login',
       component: () => import('@view/Login.vue')
     },
@@ -47,7 +54,7 @@ export const menu: [{ routes: Route[] }] = [
     routes: [
       {
         path: '/home',
-        name: 'home',
+        name: 'Home',
         meta: {
           title: '首页',
           icon: 'Location'
@@ -55,7 +62,7 @@ export const menu: [{ routes: Route[] }] = [
       },
       {
         path: '/teamManagement',
-        name: 'teamManagement',
+        name: 'TeamManagement',
         meta: {
           title: '队伍管理',
           icon: 'Location'
@@ -122,4 +129,12 @@ export const menu: [{ routes: Route[] }] = [
     ]
   }
 ]
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore()
+  if (to.name === 'Login' && userStore.getUserInfo.id) {
+    next({ name: from.name })
+  } else {
+    next()
+  }
+})
 export default router

@@ -24,7 +24,13 @@
             <span>{{ tag.meta.title }}</span>
           </el-tag>
         </div>
-        <RouterView></RouterView>
+        <router-view v-slot="{ Component }">
+          <component
+            :is="Component"
+            ref="comp"
+            :class="{ fadeOut: fadeOutToggle, fadeIn: fadeInToggle, off: offToggle }"
+          />
+        </router-view>
       </div>
     </main>
   </div>
@@ -32,30 +38,83 @@
 
 <script setup lang="ts">
 import Sidebar from './Sidebar.vue'
-
 import { useOtherStore } from '@/stores/other'
-import { ref, watch } from 'vue'
-import { Meta } from '@/typings/common'
+import { type ComponentPublicInstance, onMounted, ref, watch } from 'vue'
+import type { TagSetting } from '@/typings/common'
 import router from '@/router'
+import { useRoute } from 'vue-router'
+import NProgress from 'nprogress'
 const otherStore = useOtherStore()
-type TagSetting = { active: boolean; fullPath: string; meta: Meta }
-const dynamicTags = ref<TagSetting[]>([])
+const rootRoute = router.getRoutes().find((item) => item.path === '/')
+let redirectRoute = router.getRoutes().find((item) => item.path === rootRoute.redirect)
+
+const rootTag: TagSetting = {
+  active: true,
+  fullPath: redirectRoute.path,
+  meta: redirectRoute.meta,
+  name: redirectRoute.name
+}
+const dynamicTags = ref<TagSetting[]>([rootTag])
 const handleClick = (tag: TagSetting) => {
   dynamicTags.value.forEach((item) => (item.active = false))
   tag.active = true
-  otherStore.setActiveRoute({ fullPath: tag.fullPath, meta: tag.meta })
-  otherStore.setActivePath(tag.fullPath)
   router.push(tag.fullPath)
 }
-//监听otherStore仓库中Getter数据
+const comp = ref<ComponentPublicInstance>()
+const fadeOutToggle = ref(false)
+const fadeInToggle = ref(false)
+const offToggle = ref(false)
+let _next = null as null | Function
+let _el: HTMLElement | null = null
+const _fadeOutFunc = () => {
+  _el?.removeEventListener('animationend', _fadeOutFunc)
+  if (fadeOutToggle.value) {
+    fadeOutToggle.value = false
+    offToggle.value = true
+    NProgress.done()
+    _next && _next()
+    _next = null
+  }
+}
+let leavingComp = null
+router.beforeEach((to, from, next) => {
+  leavingComp = comp.value
+  _el = leavingComp?.$el
+  _next = next
+  if (_el && !fadeOutToggle.value) {
+    NProgress.configure({ showSpinner: false })
+    NProgress.start()
+    fadeOutToggle.value = true
+    offToggle.value = false
+    _el?.addEventListener('animationend', _fadeOutFunc)
+  } else {
+    next()
+  }
+})
+router.afterEach((to, from) => {
+  if (!leavingComp) {
+    leavingComp = comp.value
+  }
+  const comingComp = comp.value
+  let el: HTMLElement | null = comingComp.$el
+  fadeInToggle.value = true
+  offToggle.value = false
+  const _fadeInFunc = () => {
+    fadeInToggle.value = false
+    el.removeEventListener('animationend', _fadeInFunc)
+  }
+  el.addEventListener('animationend', _fadeInFunc)
+})
 watch(
-  () => otherStore.activePath,
-  () => {
-    //在捕获activePath数据更改之前，此时otherStore.activeRoute已更改
+  useRoute(),
+  (currnetRoute) => {
+    const r = currnetRoute
+    otherStore.$state.matchedRoutes = r.matched
     const newTag: TagSetting = {
       active: false,
-      fullPath: otherStore.activeRoute.fullPath,
-      meta: otherStore.activeRoute.meta
+      fullPath: r.fullPath,
+      meta: r.meta,
+      name: r.name
     }
     //看是否存在，存在就取
     const currentTag = dynamicTags.value.find((t) => t.fullPath === newTag.fullPath)
@@ -84,7 +143,52 @@ const handleClose = (tag: TagSetting, index: number) => {
     //若前面条件不满足，只删除了没有选择的标签...
   }
 }
+onMounted(() => {
+  otherStore.setRedirectRoute()
+})
 </script>
+
+<style>
+@keyframes opacity_fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes opacity_fadeOut {
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes translateX_fadeIn {
+  0% {
+    transform: translateX(-60px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+@keyframes translateX_fadeOut {
+  100% {
+    transform: translateX(60px);
+  }
+}
+.off {
+  display: none;
+}
+.fadeIn {
+  animation:
+    opacity_fadeIn 0.2s ease-out forwards,
+    translateX_fadeIn 0.25s ease-out forwards;
+}
+.fadeOut {
+  animation:
+    opacity_fadeOut 0.25s ease-out forwards,
+    translateX_fadeOut 0.2s ease-out forwards;
+}
+</style>
 
 <style scoped>
 .content {

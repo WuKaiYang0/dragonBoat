@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <!-- <ElCard> -->
+  <div class="home">
     <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item title="Feedback" name="2" icon="">
         <template #title>
@@ -50,152 +49,151 @@
         </template>
       </el-collapse-item>
     </el-collapse>
-    <!-- </ElCard> -->
-  </div>
-  <div class="comp-template">
-    <el-card class="box-card">
-      <div class="comp-header">
-        <span>赛事列表</span>
-        <div>
-          <el-button plain :icon="RefreshRight" size="small">刷新</el-button>
+    <div class="comp-template">
+      <el-card class="box-card">
+        <div class="comp-header">
+          <span>赛事列表</span>
+          <div>
+            <el-button plain :icon="RefreshRight" size="small">刷新</el-button>
+          </div>
         </div>
-      </div>
-      <!-- <div slot="header" style="display: flex; justify-content: end">
+        <!-- <div slot="header" style="display: flex; justify-content: end">
         <span style="align-self: center">龙舟大赛</span>
         <el-input v-model="search" size="default" placeholder="赛事名称.." style="width: 30%" />
       </div> -->
-      <!-- <el-table :data="dataFilter()"> -->
-      <el-table :data="searchFilter()" border style="border-radius: 4px">
-        <el-table-column prop="name" label="赛事名称" />
-        <el-table-column prop="startDate" label="开始时间" sortable />
-        <el-table-column prop="endDate" label="结束时间" sortable />
-        <el-table-column prop="location" label="赛事地点" />
-        <el-table-column prop="regulation" label="竞赛规程" />
-        <el-table-column prop="deadline" label="报名截止时间" />
-        <el-table-column prop="statusVal" label="赛事状态" sortable />
-        <el-table-column fixed="right" label="操作" :min-width="allBtnWidth">
-          <template #default="comp">
-            <!-- 查看按钮 -->
-            <el-button v-if="get" type="primary" size="small" @click="matchEvent(1)">
-              查看
-            </el-button>
-            <!-- 下载按钮 -->
-            <el-button v-if="download" type="success" size="small" target="_blank">
-              <!-- <a :href="VUE_APP_BASE_URL + comp.row.regulation">下载</a> -->
-              <a
-                target="_blank"
-                :href="VUE_APP_BASE_URL + comp.row.regulation"
-                style="color: #fff; font-size: 12px; text-decoration: unset"
-              >
-                下载
-              </a>
-              <!-- <el-link
+        <!-- <el-table :data="dataFilter()"> -->
+        <el-table :data="searchFilter()" border style="border-radius: 4px">
+          <el-table-column prop="name" label="赛事名称" />
+          <el-table-column prop="startDate" label="开始时间" sortable />
+          <el-table-column prop="endDate" label="结束时间" sortable />
+          <el-table-column prop="location" label="赛事地点" />
+          <el-table-column prop="regulation" label="竞赛规程" />
+          <el-table-column prop="deadline" label="报名截止时间" />
+          <el-table-column prop="statusVal" label="赛事状态" sortable />
+          <el-table-column fixed="right" label="操作" :min-width="allBtnWidth">
+            <template #default="comp">
+              <!-- 查看按钮 -->
+              <el-button v-if="get" type="primary" size="small" @click="matchEvent(1)">
+                查看
+              </el-button>
+              <!-- 下载按钮 -->
+              <el-button v-if="download" type="success" size="small" target="_blank">
+                <!-- <a :href="VUE_APP_BASE_URL + comp.row.regulation">下载</a> -->
+                <a
+                  target="_blank"
+                  :href="VUE_APP_BASE_URL + comp.row.regulation"
+                  style="color: #fff; font-size: 12px; text-decoration: unset"
+                >
+                  下载
+                </a>
+                <!-- <el-link
                 :href="VUE_APP_BASE_URL + comp.row.regulation"
                 style="color: #fff; font-size: 12px"
                 target="_blank"
                 >下载</el-link
               > -->
-            </el-button>
-            <!-- 编辑按钮 -->
-            <el-button
-              v-if="edit"
-              type="warning"
-              size="small"
-              @click="formAppearBeforeHandler('更改', comp.row)"
-            >
-              编辑
-            </el-button>
-            <!-- 删除按钮 -->
-            <el-button v-if="del" size="small" type="danger" @click="deleteCompHandler(2)">
-              删除
-            </el-button>
-          </template>
-          <!-- <template slot-scope="scope">
+              </el-button>
+              <!-- 编辑按钮 -->
+              <el-button
+                v-if="edit"
+                type="warning"
+                size="small"
+                @click="formAppearBeforeHandler('更改', comp.row)"
+              >
+                编辑
+              </el-button>
+              <!-- 删除按钮 -->
+              <el-button v-if="del" size="small" type="danger" @click="deleteCompHandler(2)">
+                删除
+              </el-button>
+            </template>
+            <!-- <template slot-scope="scope">
         <slot :comp="scope"></slot>
       </template> -->
-        </el-table-column>
-      </el-table>
-      <el-divider v-if="add" content-position="center">
-        <el-button type="text" @click="formAppearBeforeHandler('添加', form)"
-          >添加赛事
-          <i class="el-icon-circle-plus el-icon--right"></i>
-        </el-button>
-      </el-divider>
-    </el-card>
-    <!-- 竞赛项目+裁判组 -->
-    <el-dialog width="80%" v-model="outerVisible" title="Tips">
+          </el-table-column>
+        </el-table>
+        <el-divider v-if="add" content-position="center">
+          <el-button type="text" @click="formAppearBeforeHandler('添加', form)"
+            >添加赛事
+            <i class="el-icon-circle-plus el-icon--right"></i>
+          </el-button>
+        </el-divider>
+      </el-card>
       <!-- 竞赛项目+裁判组 -->
-      <SecondMatch
-        :com-id="compId"
-        :second-com-id.sync="secondComId"
-        :inner-visible.sync="innerVisible"
-      />
-      <el-dialog :visible.sync="innerVisible" width="80%" append-to-body>
-        <!-- 竞赛项目详细信息 -->
-        <MatchIntroduction :com-id="compId" :second-com-id="secondComId" />
+      <el-dialog width="80%" v-model="outerVisible" title="Tips">
+        <!-- 竞赛项目+裁判组 -->
+        <SecondMatch
+          :com-id="compId"
+          :second-com-id.sync="secondComId"
+          :inner-visible.sync="innerVisible"
+        />
+        <el-dialog :visible.sync="innerVisible" width="80%" append-to-body>
+          <!-- 竞赛项目详细信息 -->
+          <MatchIntroduction :com-id="compId" :second-com-id="secondComId" />
+        </el-dialog>
       </el-dialog>
-    </el-dialog>
-    <!-- 添加/修改赛事 -->
-    <el-dialog
-      :title="dialogTableStatus + '赛事'"
-      :visible.sync="dialogTableVisible"
-      :before-close="formDialogCloseBeforeHandler"
-    >
-      <!-- <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-form"> -->
-      <el-form ref="form" :model="form" label-width="120px" class="demo-form">
-        <el-form-item label="赛事名称" prop="name">
-          <el-input v-model="form.name" placeholder="赛事名称" />
-        </el-form-item>
-        <el-form-item label="起始时间" prop="startDate">
-          <el-date-picker
-            v-model="form.startDate"
-            type="date"
-            placeholder="选择赛事起始日期"
-            format="yyyy 年 MM 月 dd 日"
-            value-format="yyyy-MM-dd"
-          />
-        </el-form-item>
-        <el-form-item label="结束时间" prop="endDate">
-          <el-date-picker
-            v-model="form.endDate"
-            type="date"
-            placeholder="选择赛事结束日期"
-            format="yyyy 年 MM 月 dd 日"
-            value-format="yyyy-MM-dd"
-          />
-        </el-form-item>
-        <el-form-item label="赛事地点" prop="location">
-          <el-input v-model="form.location" placeholder="赛事地点" />
-        </el-form-item>
-        <el-form-item label="报名截止时间" prop="deadline">
-          <el-date-picker
-            v-model="form.deadline"
-            type="datetime"
-            placeholder="报名截止时间"
-            format="yyyy 年 MM 月 dd 日 HH 时 mm 分 ss 秒"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
-        </el-form-item>
-        <el-form-item label="竞赛规程" prop="fileList">
-          <el-upload
-            class="upload-demo"
-            action="#"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            :limit="1"
-            :on-exceed="handleExceed"
-            :auto-upload="false"
-            accept="application/pdf"
-            :on-change="onChange"
-            :file-list="form.fileList"
-          >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">tip：只能上传pdf文件</div>
-          </el-upload>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" @click="submitForm"> 立即{{ dialogTableStatus }} </el-button>
-    </el-dialog>
+      <!-- 添加/修改赛事 -->
+      <el-dialog
+        :title="dialogTableStatus + '赛事'"
+        :visible.sync="dialogTableVisible"
+        :before-close="formDialogCloseBeforeHandler"
+      >
+        <!-- <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-form"> -->
+        <el-form ref="form" :model="form" label-width="120px" class="demo-form">
+          <el-form-item label="赛事名称" prop="name">
+            <el-input v-model="form.name" placeholder="赛事名称" />
+          </el-form-item>
+          <el-form-item label="起始时间" prop="startDate">
+            <el-date-picker
+              v-model="form.startDate"
+              type="date"
+              placeholder="选择赛事起始日期"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
+            />
+          </el-form-item>
+          <el-form-item label="结束时间" prop="endDate">
+            <el-date-picker
+              v-model="form.endDate"
+              type="date"
+              placeholder="选择赛事结束日期"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
+            />
+          </el-form-item>
+          <el-form-item label="赛事地点" prop="location">
+            <el-input v-model="form.location" placeholder="赛事地点" />
+          </el-form-item>
+          <el-form-item label="报名截止时间" prop="deadline">
+            <el-date-picker
+              v-model="form.deadline"
+              type="datetime"
+              placeholder="报名截止时间"
+              format="yyyy 年 MM 月 dd 日 HH 时 mm 分 ss 秒"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            />
+          </el-form-item>
+          <el-form-item label="竞赛规程" prop="fileList">
+            <el-upload
+              class="upload-demo"
+              action="#"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              :limit="1"
+              :on-exceed="handleExceed"
+              :auto-upload="false"
+              accept="application/pdf"
+              :on-change="onChange"
+              :file-list="form.fileList"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">tip：只能上传pdf文件</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <el-button type="primary" @click="submitForm"> 立即{{ dialogTableStatus }} </el-button>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -453,17 +451,18 @@ export default {
 }
 </script> -->
 <script setup lang="ts">
-import { AllDataInCompItem } from '@/typings/common'
+import type { AllDataInCompItem } from '@/typings/common'
 import { CompItemStatus } from '@/typings/enums'
 import { getCurrentInstance, onMounted, ref, watch, defineProps } from 'vue'
 import { ArrowRightBold, RefreshRight, Search } from '@element-plus/icons-vue'
+import type { CollapseActiveName, CollapseModelValue } from 'element-plus'
 
 const value2 = ref('')
 const value = ref('')
 
 const activeNames = ref(['1'])
 const toggleLogo = ref(true)
-const handleChange = (val: string[]) => {
+const handleChange = () => {
   toggleLogo.value = !toggleLogo.value
 }
 

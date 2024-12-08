@@ -1,4 +1,4 @@
-import { Time } from '../common'
+import type { Time } from '../../common'
 
 export type UnitBaseInfo = {
   /**队伍名称 */

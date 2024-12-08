@@ -1,18 +1,17 @@
 <template>
-  <!-- <div> -->
   <el-menu
-    :default-active="otherStore.activePath"
+    :default-active="useRoute().fullPath"
     class="el-menu-vertical-demo"
     :collapse="otherStore.collapse"
     @open="handleOpen"
     @close="handleClose"
-    v-for="wrapper in otherStore.menus"
+    v-for="wrapper in otherStore.$state.menus"
   >
     <template v-for="rs in wrapper.routes">
       <el-menu-item
         v-if="!rs.children"
         :index="rs.path"
-        @click="menuItemClickHandler({ fullPath: rs.path, meta: rs.meta }, rs.name)"
+        @click="menuItemClickHandler({ fullPath: rs.path, meta: rs.meta, name: rs.name }, rs.name)"
       >
         <el-icon v-if="rs.meta.icon"><component :is="rs.meta.icon" /></el-icon>
         <span>{{ rs.meta.title }}</span>
@@ -28,7 +27,10 @@
             v-for="r in rs.children"
             :index="rs.path + '/' + r.path"
             @click="
-              menuItemClickHandler({ fullPath: rs.path + '/' + r.path, meta: r.meta }, r.name)
+              menuItemClickHandler(
+                { fullPath: rs.path + '/' + r.path, meta: r.meta, name: r.name },
+                r.name
+              )
             "
           >
             <template #title>
@@ -40,17 +42,14 @@
       </template>
     </template>
   </el-menu>
-  <!-- </div> -->
 </template>
 
 <script lang="ts" setup>
 import { useOtherStore } from '@/stores/other'
-import { ActiveRoute } from '@/typings/common'
-import { locateRoute } from '@/utils/common'
+import type { ActiveRoute } from '@/typings/common'
 import { onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
-const route = useRoute()
 const otherStore = useOtherStore()
 
 const handleOpen = (key: string, keyPath: string[]) => {
@@ -61,10 +60,6 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 const menuItemClickHandler = (activeRoute: ActiveRoute, name: string) => {
   router.push({ path: activeRoute.fullPath })
-  //先setActiveRoute
-  //因为MainContent组件内watch->activePath,需要捕获更新后拿到 meta 数据
-  otherStore.setActiveRoute(activeRoute)
-  otherStore.setActivePath(activeRoute.fullPath)
 }
 const setSideBarAuto = () => {
   if (document.documentElement.offsetWidth <= 1160) {
@@ -73,16 +68,6 @@ const setSideBarAuto = () => {
     }
   }
 }
-watch(
-  () => route.fullPath,
-  (fullPath) => {
-    const routes = otherStore.menus[0].routes
-    const _pathNameArr = fullPath.replace('/', '').split('/')
-    const { _currentRoute } = locateRoute(routes, _pathNameArr)
-    otherStore.setActiveRoute({ fullPath, meta: _currentRoute.meta })
-    otherStore.setActivePath(fullPath)
-  }
-)
 onMounted(() => {
   window.addEventListener('resize', setSideBarAuto)
 })

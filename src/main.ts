@@ -2,6 +2,7 @@
 import '@styles/variables.css'
 import '@styles/common.css'
 import '@styles/elementUI.css'
+import 'nprogress/nprogress.css'
 //加入标签
 const metaNode = document.createElement('link')
 import logo from '../public/statics/logo.png'
@@ -22,6 +23,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 app.config.globalProperties.$requests = $requests
 app.config.globalProperties.$message = ElMessage
-app.use(createPinia())
 app.use(router)
+app.use(createPinia())
 app.mount('#app')

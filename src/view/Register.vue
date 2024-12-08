@@ -185,8 +185,8 @@
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { DocumentAdd, ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 import dragonSvg from '@assets/svgs/dragboat_logo.svg'
-import type { TeamRegister } from '@/typings/unit/index'
-import { FormRules, FormInstance, ElMessage } from 'element-plus'
+import type { TeamRegister } from '@/typings/user/unit/index'
+import { type FormRules, type FormInstance, ElMessage } from 'element-plus'
 import { AxiosError } from 'axios'
 import router from '@/router'
 const { $requests, $message } = getCurrentInstance().appContext.config.globalProperties

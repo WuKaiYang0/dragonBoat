@@ -1,6 +1,6 @@
 import { WhatColor } from '@/typings/enums'
-import { Route, Time } from '@/typings/common'
-import dayjs from 'dayjs'
+import type { Route, Time } from '@/typings/common'
+import * as dayjs from 'dayjs'
 
 export const getColor = (color: string | WhatColor) => color
 export const setTime: () => Time = () => dayjs().format('YYYY-MM-DD hh:mm:ss')

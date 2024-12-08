@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { menu } from '@router/index'
-import { ActiveRoute, Meta, Route } from '@/typings/common'
+import type { ActiveRoute, Meta, Route } from '@/typings/common'
+import { useRouter, type RouteLocationMatched, type RouteRecordNormalized } from 'vue-router'
 
 const activeRouteUtil = (routes: Route[]) => {
   let lastPath: Array<string> = []
@@ -17,26 +18,43 @@ const activeRouteUtil = (routes: Route[]) => {
     }
   })()
 }
-export const useOtherStore = defineStore('other', () => {
-  const isCollapse = ref(false)
-  const menus = ref(menu)
-  const route = ref(activeRouteUtil(menu[0].routes))
-  const path = ref(route.value.fullPath)
-  const setActiveRoute = (r: ActiveRoute) => (route.value = r)
-  const setActivePath = (p: string) => (path.value = p)
-  const toggleCollapse = () => (isCollapse.value = !isCollapse.value)
-  const setCollapse = (bool: boolean) => (isCollapse.value = bool)
-  const collapse = computed(() => isCollapse.value)
-  const activeRoute = computed(() => route.value)
-  const activePath = computed(() => path.value)
-  return {
-    toggleCollapse,
-    setCollapse,
-    collapse,
-    activeRoute,
-    menus,
-    setActiveRoute,
-    activePath,
-    setActivePath
+export const useOtherStore = defineStore('other', {
+  state: () => ({
+    isCollapse: false,
+    menus: menu,
+    redirectRoute: {} as RouteRecordNormalized,
+    matchedRoutes: [] as RouteLocationMatched[]
+  }),
+  getters: {
+    collapse(state) {
+      return state.isCollapse
+    },
+    getMatchedRoutesTitle(state) {
+      const matchedRoutes = state.matchedRoutes.map((item) => {
+        if (item.path === '/') {
+          return state.redirectRoute.meta?.title
+        } else {
+          return item.meta.title
+        }
+      })
+      return [...new Set(matchedRoutes)]
+    }
+  },
+  actions: {
+    setCollapse(bool: boolean) {
+      this.$state.isCollapse = bool
+    },
+    toggleCollapse() {
+      this.$state.isCollapse = !this.$state.isCollapse
+    },
+    setRedirectRoute() {
+      if (!this.$state.redirectRoute.path) {
+        const router = useRouter()
+        const rootRoute = router.getRoutes().find((item) => item.path === '/')
+        this.$state.redirectRoute = router
+          .getRoutes()
+          .find((item) => item.path === rootRoute.redirect)
+      }
+    }
   }
 })

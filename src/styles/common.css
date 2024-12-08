@@ -68,3 +68,6 @@ ul {
 li {
   display: block;
 }
+#nprogress .bar {
+  background: var(--Theme-Color) !important;
+}

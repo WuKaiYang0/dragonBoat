@@ -8,18 +8,24 @@ import {
   PeopleTypeOnDamamd,
   SexTypeOnDamand
 } from '../enums'
+import type { RouteMeta, RouteRecordNameGeneric } from 'vue-router'
 export type Time = string
 export type Route = {
   path: string
   name: string
   children?: Route[]
-  meta: Meta
+  meta: RouteMeta
 }
 export type Meta = {
   icon?: keyof typeof icon
   title: string
 }
-export type TagSetting = { active: boolean; fullPath: string; meta: Meta }
+export type TagSetting = {
+  active: boolean
+  fullPath: string
+  name: RouteRecordNameGeneric
+  meta: RouteMeta
+}
 export type ActiveRoute = Omit<TagSetting, 'active'>
 
 export type Competition = {

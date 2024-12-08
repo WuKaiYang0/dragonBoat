@@ -16,7 +16,9 @@
   "devDependencies": {
     "@iconify-json/ep": "^1.1.16",
     "@types/node": "^22.1.0",
+    "@types/nprogress": "^0.2.3",
     "@vitejs/plugin-vue": "^5.1.2",
+    "@vue/tsconfig": "^0.7.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.27.0",
@@ -38,7 +40,8 @@
     "axios": "^1.7.3",
     "dayjs": "^1.11.12",
     "element-plus": "^2.8.7",
-    "pinia": "^2.2.2",
+    "nprogress": "^0.2.0",
+    "pinia": "^2.3.0",
     "typescript": "^5.5.4",
     "vue": "^3.4.36",
     "vue-router": "^4.4.3"

@@ -1,6 +1,6 @@
-import { TeamRegister } from '@/typings/unit/index'
+import type { TeamRegister } from '@/typings/user/unit/index'
 import axios from '../../utils/request'
-import { AllDataInCompItem, BackDataFormat, DataInAthletesType } from '@/typings/common'
+import type { AllDataInCompItem, BackDataFormat, DataInAthletesType } from '@/typings/common'
 import { LocalStorageKey } from '@/typings/enums'
 /**获取邮箱验证码 */
 export const getLoginVerifyByEmail = (email: string) =>

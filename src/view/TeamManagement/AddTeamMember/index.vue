@@ -411,14 +411,22 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { TeamMember, UnitTeamListData } from '@/typings/unit'
-import { CardInstance, FormRules, FormInstance, ElMessageBox } from 'element-plus'
-import { getCurrentInstance, nextTick, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
+import { type TeamMember, type UnitTeamListData } from '@/typings/user/unit'
+import { type CardInstance, type FormRules, type FormInstance, ElMessageBox } from 'element-plus'
+import {
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  type PropType,
+  ref,
+  watch
+} from 'vue'
 import { getColor, outputAgeAndBirthdayByIdCard } from '@/utils/common'
 import { LocalStorageKey, WhatColor } from '@/typings/enums'
 import { getItem } from '@/utils/localStorage'
 import router from '@/router'
-import { DataInAthletesType } from '@/typings/common'
+import type { DataInAthletesType } from '@/typings/common'
 import { Edit, Delete } from '@element-plus/icons-vue'
 const { $message, $requests } = getCurrentInstance().appContext.config.globalProperties
 const onSizeChange = (val: number) => {

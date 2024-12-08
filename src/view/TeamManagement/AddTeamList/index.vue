@@ -112,13 +112,13 @@
 <script setup lang="ts">
 import WrapperElPagination from '@/components/WrapperElPagination.vue'
 import router from '@/router'
-import { useUnitStore } from '@/stores/unit'
+import { useUserStore } from '@/stores/user'
 import { LocalStorageKey, WhatColor } from '@/typings/enums'
 import { getItem } from '@/utils/localStorage'
-import { DialogBeforeCloseFn, FormInstance, vLoading } from 'element-plus'
-import { getCurrentInstance, onMounted, PropType, ref, watch } from 'vue'
+import { type DialogBeforeCloseFn, type FormInstance, vLoading } from 'element-plus'
+import { getCurrentInstance, onMounted, type PropType, ref, watch } from 'vue'
 import { Search, Plus } from '@element-plus/icons-vue'
-import { UnitTeamListData } from '@/typings/unit'
+import type { UnitTeamListData } from '@/typings/user/unit'
 import { getColor } from '@/utils/common'
 const { $message, $requests } = getCurrentInstance().appContext.config.globalProperties
 const teamListOne = defineModel({
@@ -143,7 +143,7 @@ const onCurrentChange = (val: number) => {
 }
 const teamList = ref<UnitTeamListData['datas']>([])
 const updateTeamNameForm = ref<{ name: string; id: number }>({ name: '', id: null })
-const unitStore = useUnitStore()
+const userStore = useUserStore()
 const searchChangeHandler = (val: string | number) => {
   if (val === '') {
     getUnitTeamList()
@@ -165,7 +165,7 @@ const addTeamList = () => {
           data: { code, data, message }
         } = await $requests.unitAPI.addTeamListByUnitId(token, {
           name: addTeamListForm.value.name,
-          unitId: unitStore.unit.id
+          unitId: userStore.userInfo.id
         })
         if (code === 200) {
           getUnitTeamList()

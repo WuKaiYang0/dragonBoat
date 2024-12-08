@@ -6,8 +6,14 @@
 <script setup lang="ts">
 import { WhatColor } from '@/typings/enums'
 import { getColor } from '@/utils/common'
-import { ElButton, ButtonInstance, buttonProps, ButtonType, ButtonProps } from 'element-plus'
-import { PropType, ref } from 'vue'
+import {
+  ElButton,
+  type ButtonInstance,
+  buttonProps,
+  type ButtonType,
+  type ButtonProps
+} from 'element-plus'
+import { type PropType, ref } from 'vue'
 const prop = defineProps(
   Object.assign(buttonProps, {
     borderColor: { type: String, default: getColor(WhatColor.InitialColor) },

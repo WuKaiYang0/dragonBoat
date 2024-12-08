@@ -1,7 +1,7 @@
 import axios from '@utils/request'
-import { TeamMember, UnitData, UnitTeamListData } from '@/typings/unit'
-import { BackDataFormat } from '@typings/common'
-export const getUnitInfo = (token: string) =>
+import type { TeamMember, UnitData, UnitTeamListData } from '@/typings/user/unit'
+import type { BackDataFormat } from '@typings/common'
+export const getUserInfo = (token: string) =>
   axios.get<BackDataFormat<UnitData>>('/team/queryTeamById', {
     headers: {
       Authorization: token

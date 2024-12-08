@@ -1,15 +1,40 @@
 {
+  //哪些文件需要编译
   "include": ["src/**/*", "src/**/*.vue", "typings/**/*"],
   "compilerOptions": {
-    //跳过node_modules检测错误
+    // 为每个编译后的 .ts 文件生成相应的 .d.ts 类型声明文件
+    "declaration": false,
+    //用于不允许隐式 any 类型。(解决了pinia中actions下方法的this引用 没有类型提示的问题)
+    "noImplicitThis": true,
+    // 空值检查
+    "strictNullChecks": false,
+    //函数参数类型进行更严格的检查
+    "strictFunctionTypes": true,
+    //启用严格的 bind、call 和 apply 方法检查
+    "strictBindCallApply": true,
+    // 提供了一组全局变量和类型声明
+    "lib": ["DOM", "ES2020"],
+    //跳过node_modules检测错误，跳过所有类型声明文件的类型检查
     "skipLibCheck": true,
-    "noEmit": false,
+    //不生成JavaScript文件（只做类型检查，tsc）
+    "noEmit": true,
+    //指定编译后的模块系统
     "module": "es2020",
-    "moduleResolution": "node",
+    //模块解析策略
+    "moduleResolution": "bundler",
+    //生成的 JavaScript 代码在哪些环境中运行
     "target": "es2020",
-    "esModuleInterop": true,
+    //是否支持ES导入的方式导入commonJS包
+    "esModuleInterop": false,
+    //类型修饰符的内容都将被完全删除
+    "verbatimModuleSyntax": true,
+    //类型模块所在的目录，默认是node_modules/@types
+    "typeRoots": ["node_modules/@types", "node_modules"],
+    //将typeRoots目录下所有模块都会自动加入编译
     "types": ["element-plus/global"],
+    //用于解析非相对模块名称的基目录
     "baseUrl": ".",
+    //模块名 基于 baseUrl 的路径映射
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],

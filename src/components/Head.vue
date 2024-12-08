@@ -10,7 +10,9 @@
       <div class="bread">
         <el-divider direction="vertical" />
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item v-for="p in routeTitleArr">{{ p }}</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="p in otherStore.getMatchedRoutesTitle">{{
+            p
+          }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <div class="operations">
@@ -25,7 +27,7 @@
         <i class="avatar">
           <Avatar></Avatar>
         </i>
-        <span style="font-size: 15px">{{ userStore.unit?.name }}</span>
+        <span style="font-size: 15px">{{ userStore.userInfo?.name }}</span>
         <el-popover
           placement="bottom-end"
           trigger="click"
@@ -61,19 +63,18 @@ import FullScreen from './svgs/FullScreen.vue'
 import OffScreen from './svgs/OffScreen.vue'
 import Avatar from '@components/svgs/Avatar.vue'
 import { Refresh, Bell, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
-import { useUnitStore } from '@/stores/unit'
+import { useUserStore } from '@/stores/user'
 import { useOtherStore } from '@/stores/other'
 import { getCurrentInstance, onMounted, watch, ref, unref, onUnmounted } from 'vue'
 import { delItem, getItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
 import router from '@/router'
 import { ClickOutside as vClickOutside, ElLoading } from 'element-plus'
-import { Route } from '@/typings/common'
-import { locateRoute } from '@/utils/common'
-const { $requests, $message } = getCurrentInstance().appContext.config.globalProperties
-const userStore = useUnitStore()
+
+const { $requests, $message } = getCurrentInstance()!.appContext.config.globalProperties
+const userStore = useUserStore()
 const otherStore = useOtherStore()
-const routeTitleArr = ref<string[]>([])
+// const routeTitleArr = ref<string[]>([])
 const isFullScreen = ref(false)
 const toggleFullScreen = () => {
   if (!document.fullscreenElement) {
@@ -95,52 +96,16 @@ const onfullscreenchange = () => {
 }
 
 document.addEventListener('fullscreenchange', onfullscreenchange)
-watch(
-  () => otherStore.activePath,
-  (p) => {
-    const routes = otherStore.menus[0].routes
-    const _pathNameArr = p.replace('/', '').split('/')
-    const { _routeTitleArr } = locateRoute(routes, _pathNameArr)
-    routeTitleArr.value = _routeTitleArr
-  },
-  {
-    immediate: true
-  }
-)
 //页面刷新的情况下
 const getData = async () => {
-  const loadingInstance = ElLoading.service({
+  let loadingInstance = ElLoading.service({
     text: '正在初始化'
   })
-  try {
-    const token = getItem(LocalStorageKey.TOKEN)
-    if (!token) {
-      router.replace('/login')
-      return
-    }
-    if (token) {
-      const {
-        data: { data, code, message }
-      } = await $requests.unitAPI.getUnitInfo(token)
-      if (code == 200) {
-        userStore.setUnitInfo(data)
-      } else {
-        delItem(LocalStorageKey.TOKEN)
-        $message.warning({ message })
-        router.replace('/login')
-      }
-    } else {
-      router.replace('/login')
-    }
-  } catch (error) {
-    $message.error({ message: error.message })
-    delItem(LocalStorageKey.TOKEN)
-    router.replace('/login')
-  } finally {
+  userStore.fetchUserInfo().finally(() => {
     setTimeout(() => {
-      loadingInstance.close()
+      loadingInstance?.close()
     }, 1000)
-  }
+  })
 }
 const arrowTrigger = ref(true)
 const buttonRef = ref()
@@ -161,6 +126,7 @@ const logout = async () => {
     } = res
     if (code) {
       delItem(LocalStorageKey.TOKEN)
+      userStore.$reset()
       $message.success(message)
       router.replace('/login')
     } else {

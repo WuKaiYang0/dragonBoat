@@ -159,12 +159,12 @@ import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 import { User, Lock, DocumentAdd, UserFilled, Key } from '@element-plus/icons-vue'
 import dragonSvg from '@assets/svgs/dragboat_logo.svg'
-import { ElMessage, FormInstance } from 'element-plus'
-import { BackDataFormat } from '@/typings/common/index'
-import { AxiosError, AxiosResponse } from 'axios'
-import { getItem, setItem } from '@/utils/localStorage'
+import { ElMessage, type FormInstance } from 'element-plus'
+import type { BackDataFormat } from '@/typings/common/index'
+import { type AxiosResponse } from 'axios'
+import { setItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
-import { useUnitStore } from '@/stores/unit'
+import { useUserStore } from '@/stores/user'
 const value1 = ref(Date.now())
 const accountForm = ref({ account: '', password: '' })
 const emailForm = ref({ email: '', verify: '' })
@@ -177,7 +177,6 @@ const sendCodeIsDisable = ref(false)
 type LoginMode = '邮箱' | '账号'
 let loginMode = ref<LoginMode>('账号')
 const loading = ref(false)
-const store = useUnitStore()
 const c = {
   邮箱: {
     class1: 'clockwise90',
@@ -234,7 +233,7 @@ const submitForm = async (mode: LoginMode) => {
             message: '登录成功'
           })
           setItem(LocalStorageKey.TOKEN, data.token)
-          useUnitStore().setToken(data.token)
+          useUserStore().setToken(data.token)
           router.push('/home')
         } else {
           $message.error({

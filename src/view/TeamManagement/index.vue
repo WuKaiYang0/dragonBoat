@@ -1,5 +1,5 @@
 <template>
-  <div class="unit-team">
+  <div class="unit-team" ref="unitTeamRef">
     <AddTeamList ref="AddTeamListRef" v-model="teamListOne"></AddTeamList>
     <div class="unit-team-wrapper">
       <ElCard>
@@ -97,133 +97,129 @@
         :athletes-type="athletesType"
         :athletes-type-id="athletesTypeId"
       ></AddTeamMember>
-    </div>
-    <el-dialog
-      title="添加新成员"
-      :model-value="newMemberDialogFormVisible"
-      :before-close="resetNewMemberForm"
-      destroy-on-close
-      center
-      width="30%"
-      top="5vh"
-    >
-      <el-form
-        ref="newMemberFormRef"
-        :model="newMemberForm"
-        :rules="newMemberFormRules"
-        label-width="80px"
+      <el-dialog
+        title="添加新成员"
+        :model-value="newMemberDialogFormVisible"
+        :before-close="resetNewMemberForm"
+        destroy-on-close
+        center
+        width="30%"
+        top="5vh"
       >
-        <!-- <el-form-item label="照片" prop="fileList">
+        <el-form
+          ref="newMemberFormRef"
+          :model="newMemberForm"
+          :rules="newMemberFormRules"
+          label-width="80px"
+        >
+          <!-- <el-form-item label="照片" prop="fileList">
           <UploadImage v-model:file-list="newMemberForm.fileList" />
         </el-form-item> -->
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="newMemberForm.name" style="width: 100%" />
-        </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-radio-group v-model="newMemberForm.gender">
-            <el-radio :value="0"> 男 </el-radio>
-            <el-radio :value="1"> 女 </el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-radio-group v-model="newMemberForm.type">
-            <el-radio :value="t.id" v-for="t in athletesType"> {{ t.typeName }} </el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="民族" prop="nation">
-          <el-select-v2
-            v-model="newMemberForm.nation"
-            :options="nationType"
-            placeholder="选择民族"
-            style="width: 100%; vertical-align: middle"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="上衣尺码" prop="coatSize">
-          <el-select-v2
-            v-model="newMemberForm.coatSize"
-            :options="[
-              { value: 'S', label: 'S' },
-              { value: 'M', label: 'M' },
-              { value: 'L', label: 'L' },
-              { value: 'XL', label: 'XL' },
-              { value: 'XXL', label: 'XXL' }
-            ]"
-            placeholder="选择尺码"
-            style="width: 100%; vertical-align: middle"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="裤子尺码" prop="trousersSize">
-          <el-select-v2
-            v-model="newMemberForm.trousersSize"
-            :options="[
-              { value: 'S', label: 'S' },
-              { value: 'M', label: 'M' },
-              { value: 'L', label: 'L' },
-              { value: 'XL', label: 'XL' },
-              { value: 'XXL', label: 'XXL' }
-            ]"
-            placeholder="选择尺码"
-            style="width: 100%; vertical-align: middle"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="newMemberForm.phone" style="width: 100%" />
-        </el-form-item>
-        <el-form-item label="证件号码" prop="idCard">
-          <el-input v-model.trim="newMemberForm.idCard" style="width: 100%" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="unaddNewMember"> 取 消 </el-button>
-        <el-button type="primary" @click="addNewMember"> 确 定 </el-button>
-      </div>
-    </el-dialog>
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="newMemberForm.name" style="width: 100%" />
+          </el-form-item>
+          <el-form-item label="性别" prop="gender">
+            <el-radio-group v-model="newMemberForm.gender">
+              <el-radio :value="0"> 男 </el-radio>
+              <el-radio :value="1"> 女 </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="类型" prop="type">
+            <el-radio-group v-model="newMemberForm.type">
+              <el-radio :value="t.id" v-for="t in athletesType"> {{ t.typeName }} </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="民族" prop="nation">
+            <el-select-v2
+              v-model="newMemberForm.nation"
+              :options="nationType"
+              placeholder="选择民族"
+              style="width: 100%; vertical-align: middle"
+              clearable
+            />
+          </el-form-item>
+          <el-form-item label="上衣尺码" prop="coatSize">
+            <el-select-v2
+              v-model="newMemberForm.coatSize"
+              :options="[
+                { value: 'S', label: 'S' },
+                { value: 'M', label: 'M' },
+                { value: 'L', label: 'L' },
+                { value: 'XL', label: 'XL' },
+                { value: 'XXL', label: 'XXL' }
+              ]"
+              placeholder="选择尺码"
+              style="width: 100%; vertical-align: middle"
+              clearable
+            />
+          </el-form-item>
+          <el-form-item label="裤子尺码" prop="trousersSize">
+            <el-select-v2
+              v-model="newMemberForm.trousersSize"
+              :options="[
+                { value: 'S', label: 'S' },
+                { value: 'M', label: 'M' },
+                { value: 'L', label: 'L' },
+                { value: 'XL', label: 'XL' },
+                { value: 'XXL', label: 'XXL' }
+              ]"
+              placeholder="选择尺码"
+              style="width: 100%; vertical-align: middle"
+              clearable
+            />
+          </el-form-item>
+          <el-form-item label="联系电话" prop="phone">
+            <el-input v-model="newMemberForm.phone" style="width: 100%" />
+          </el-form-item>
+          <el-form-item label="证件号码" prop="idCard">
+            <el-input v-model.trim="newMemberForm.idCard" style="width: 100%" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="unaddNewMember"> 取 消 </el-button>
+          <el-button type="primary" @click="addNewMember"> 确 定 </el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  getCurrentInstance,
-  markRaw,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  ref,
-  toRaw,
-  watch
-} from 'vue'
-import {
-  FormInstance,
-  FormRules,
-  ColInstance,
-  DialogBeforeCloseFn,
-  ElMessageBox,
-  vLoading,
-  CardInstance
-} from 'element-plus'
-import { TeamMember, UnitTeamListData } from '@/typings/unit'
-import axios from 'axios'
-import { Edit, CirclePlus, Check, Close, Search, Plus, Delete } from '@element-plus/icons-vue'
+import { getCurrentInstance, ref, watch } from 'vue'
+import { type FormInstance, type FormRules, type ColInstance, ElMessageBox } from 'element-plus'
+import type { TeamMember, UnitTeamListData } from '@/typings/user/unit'
+import { Edit, Check, Close, Search, Plus } from '@element-plus/icons-vue'
 import { getItem } from '@/utils/localStorage'
-import { LocalStorageKey, NaionTypeOnDamand, WhatColor } from '@/typings/enums'
+import { LocalStorageKey, WhatColor } from '@/typings/enums'
 import router from '@/router'
 import { getColor, outputAgeAndBirthdayByIdCard } from '@/utils/common'
 import WrapperElButton from '@/components/WrapperElButton.vue'
 import AddTeamList from './AddTeamList/index.vue'
 import AddTeamMember from './AddTeamMember/index.vue'
-import { DataInAthletesType } from '@/typings/common'
+import type { DataInAthletesType } from '@/typings/common'
 const { $message, $requests } = getCurrentInstance().appContext.config.globalProperties
 const athletesType = ref<DataInAthletesType[]>([])
 const searchTeamName = ref('')
 const athletesTypeId = ref()
 const teamListOne = ref<UnitTeamListData['datas'][number]>()
-const newMemberForm = ref<TeamMember>()
+const newMemberForm = ref<TeamMember>({
+  id: 0,
+  teamId: 0,
+  name: '',
+  gender: 0,
+  nation: 0,
+  age: 0,
+  birthday: '',
+  phone: '',
+  idCard: '',
+  type: 0,
+  coatSize: '',
+  trousersSize: '',
+  photo: ''
+})
 const AddTeamListRef = ref<InstanceType<typeof AddTeamList>>()
 const AddTeamMemberRef = ref<InstanceType<typeof AddTeamMember>>()
+const unitTeamRef = ref<HTMLDivElement>()
 
 const searchTeamMembersHandler = () => {
   AddTeamMemberRef.value.searchTeamMember()
@@ -331,8 +327,8 @@ const teamFormRules = {
 const newMemberDialogFormVisible = ref(false)
 
 const resetModifyMemberForm = () => {
-  newMemberDialogFormVisible.value = !newMemberDialogFormVisible.value
   newMemberFormRef.value.resetFields()
+  newMemberDialogFormVisible.value = !newMemberDialogFormVisible.value
 }
 const confirmUpdateTeamName = async (o: { isUpdateName: boolean; n: string; lastName: string }) => {
   const token = getItem(LocalStorageKey.TOKEN)
@@ -408,7 +404,7 @@ const addNewMember = async () => {
           birthday,
           coatSize: newMemberForm.value.coatSize,
           gender: Number(newMemberForm.value.gender),
-          idCard: newMemberForm.value.idCard,
+          idCard: newMemberForm.value.idCard.toUpperCase(),
           name: newMemberForm.value.name,
           nation: Number(newMemberForm.value.nation),
           phone: newMemberForm.value.phone,
@@ -437,6 +433,7 @@ const addNewMember = async () => {
 }
 const unaddNewMember = () => resetModifyMemberForm()
 const resetNewMemberForm = () => {
+  newMemberFormRef.value.resetFields()
   newMemberDialogFormVisible.value = !newMemberDialogFormVisible.value
 }
 const nationType = [
@@ -685,8 +682,12 @@ const getMemberType = async () => {
     athletesLoading.value = false
   }
 }
+// onBeforeRouteLeave((to, from, next) => {
+//   setTimeout(() => {
+//     next((vm)=>{})
+//   }, 500)
+// })
 </script>
-
 <style scoped>
 .unit-team {
   display: flex;
