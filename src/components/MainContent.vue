@@ -78,6 +78,7 @@ const _fadeOutFunc = () => {
 }
 let leavingComp = null
 router.beforeEach((to, from, next) => {
+  leavingComp = null
   leavingComp = comp.value
   _el = leavingComp?.$el
   _next = next
@@ -96,7 +97,7 @@ router.afterEach((to, from) => {
     leavingComp = comp.value
   }
   const comingComp = comp.value
-  let el: HTMLElement | null = comingComp.$el
+  let el: HTMLElement | null = comingComp?.$el
   fadeInToggle.value = true
   offToggle.value = false
   const _fadeInFunc = () => {
