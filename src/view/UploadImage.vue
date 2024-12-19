@@ -70,36 +70,28 @@ import { ref } from 'vue'
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import { genFileId } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import type {
-  UploadFile,
-  UploadFiles,
-  UploadInstance,
-  UploadProps,
-  UploadRawFile,
-  UploadUserFile
-} from 'element-plus'
-const onChange: UploadProps['onChange'] = (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+import type { UploadFile, UploadInstance, UploadProps, UploadRawFile } from 'element-plus'
+const onChange: UploadProps['onChange'] = (uploadFile: UploadFile) => {
   const rawFile = uploadFile.raw
   if (rawFile.type !== 'image/jpeg') {
     ElMessage.error('Avatar picture must be JPG format!')
     upload.value!.clearFiles()
     return false
   }
-  prop.fileList.length = 0
-  prop.fileList.push(uploadFile)
+  // prop.fileList = []
+  // prop.fileList.push(uploadFile)
   return true
 }
 const upload = ref<UploadInstance>()
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const disabled = ref(false)
-const fileList = ref<UploadUserFile[]>([])
-const prop = defineProps({
-  fileList: {
-    type: Array,
-    required: true
-  }
-})
+// const prop = defineProps({
+//   fileList: {
+//     type: Array,
+//     required: true
+//   }
+// })
 const handleRemove = (file: UploadFile) => {
   upload.value!.clearFiles()
   console.log(file)

@@ -1,6 +1,6 @@
 .pagination-wrapper {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   color: #4060c7 !important;
   :deep(.el-pager li.is-active, .el-pager li:hover) {
     color: #4060c7;

@@ -52,5 +52,35 @@ export default [
         }
       }
     }
+  },
+  {
+    url: '/unit/team/member/queryMember',
+    method: 'post',
+    response() {
+      return {
+        code: 200,
+        message: '获取成功',
+        data: {
+          totals: 1,
+          datas: [
+            {
+              id: 1,
+              teamId: 1,
+              name: 'fake name',
+              gender: 1,
+              nation: 1,
+              age: 12,
+              birthday: 2021 - 1 - 1,
+              phone: '12345678',
+              idCard: '44142320000416173X',
+              type: 1,
+              coatSize: 'XL',
+              trousersSize: 'XL',
+              photo: ''
+            }
+          ]
+        }
+      }
+    }
   }
 ] as MockMethod[]

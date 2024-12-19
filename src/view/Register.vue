@@ -15,7 +15,7 @@
                 "
               >
                 <span style="font-size: 32px; color: #2d51e6; font-weight: 700">欢迎注册</span>
-                <img src="" alt="" ref="dragonBoatLogo" style="object-fit: contain; height: 50px" />
+                <img ref="dragonBoatLogo" src="" alt="" style="object-fit: contain; height: 50px" />
               </div>
               <div class="register-frame-input">
                 <el-form
@@ -125,11 +125,11 @@
                             type="primary"
                             text
                             style="height: var(--el-component-size-large); width: 100px"
-                            @click="sendCodeHandler"
                             :disabled="sendCodeIsDisable"
+                            @click="sendCodeHandler"
                           >
                             <span v-if="!sendCodeIsDisable">发送验证码</span>
-                            <template # v-if="sendCodeIsDisable">
+                            <template v-if="sendCodeIsDisable">
                               <el-countdown
                                 format="已发送ss"
                                 :value="value1"
@@ -143,7 +143,7 @@
                   </el-form-item>
                 </el-form>
               </div>
-              <div class="register-frame-btns" v-if="isSwitch">
+              <div v-if="isSwitch" class="register-frame-btns">
                 <div class="registerBtn btn" @click="next()">
                   <div style="display: flex; align-items: flex-end">
                     <span style="font-size: var(--el-font-size-base); margin-left: 5px"
@@ -154,11 +154,11 @@
                 </div>
               </div>
 
-              <div class="register-frame-btns" v-if="!isSwitch">
+              <div v-if="!isSwitch" class="register-frame-btns">
                 <div
                   class="registerBtn btn"
-                  @click="isSwitch = !isSwitch"
                   style="background-color: unset; color: unset"
+                  @click="isSwitch = !isSwitch"
                 >
                   <div style="display: flex; align-items: flex-end">
                     <el-icon><ArrowLeft /></el-icon>
@@ -249,7 +249,7 @@ const next = async () => {
   // })
   await lastFormRef.value.validate((valid, fields) => {
     if (valid) {
-      nextFormRef.value && nextFormRef.value.resetFields()
+      nextFormRef.value?.resetFields()
       isSwitch.value = !isSwitch.value
     } else {
       console.log('error submit!', fields)
@@ -260,7 +260,7 @@ const sendCodeHandler = () => {
   nextFormRef.value.validate((valid, fields) => {
     console.log(valid, fields)
 
-    if (!fields || !fields.hasOwnProperty('email')) {
+    if (!fields || !Object.prototype.hasOwnProperty.call(fields, 'email')) {
       nextFormRef.value.resetFields('verify')
       sendCodeIsDisable.value = !sendCodeIsDisable.value
       value1.value = Date.now() + 1000 * 5
@@ -294,7 +294,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       console.log(lastValidateForm.value)
       $requests.commonAPI
         .registerTeam(lastValidateForm.value)
-        .then(({ data: { code, data, message } }) => {
+        .then(({ data: { code, message } }) => {
           if (code == 200) {
             $message.success({
               type: 'success',
@@ -317,7 +317,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             duration: 5000
           })
           isSwitch.value = !isSwitch.value
-          lastFormRef.value && lastFormRef.value.resetFields()
+          lastFormRef.value?.resetFields()
         })
     } else {
       console.log('error submit!', fields)

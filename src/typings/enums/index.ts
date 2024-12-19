@@ -4,7 +4,8 @@ export enum LocalStorageKey {
 export enum WhatColor {
   ThemeColor = '#4060c7',
   InitialColor = '#dcdfe6',
-  DeleteColor = '#f56c6c'
+  DeleteColor = '#f56c6c',
+  WhiteColor = '#ffffff'
 }
 export enum CompItemCategoryOnDamand {
   '直道竞速赛100米赛程',
@@ -103,7 +104,7 @@ export enum NaionTypeOnDamand {
   ' 其他'
 }
 export enum CompItemStatus {
-  '报名中',
-  '截止报名',
-  '已结束'
+  '$0' = '报名中',
+  '$1' = '截止报名',
+  '$2' = '已结束'
 }

@@ -55,7 +55,7 @@ export const useUserStore = defineStore('user', {
       }
     },
     logoIn() {
-      this
+      // this
     }
   }
 })

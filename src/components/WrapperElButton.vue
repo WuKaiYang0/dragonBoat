@@ -1,5 +1,5 @@
 <template>
-  <ElButton class="btn" :="groupBtnProp" :btnType>
+  <ElButton class="btn" :="groupBtnProp" :btn-type>
     <slot></slot>
   </ElButton>
 </template>
@@ -7,9 +7,9 @@
 import { WhatColor } from '@/typings/enums'
 import { getColor } from '@/utils/common'
 import { ElButton, buttonProps, type ButtonProps } from 'element-plus'
-import { Delete, Edit, Plus, Search } from '@element-plus/icons-vue'
-import { computed, type PropType, ref, watch } from 'vue'
-type BtnKeys = 'del' | 'edit' | 'search' | 'plus'
+import { Delete, Edit, Plus, Search, Refresh } from '@element-plus/icons-vue'
+import { computed, type PropType } from 'vue'
+type BtnKeys = 'del' | 'edit' | 'search' | 'plus' | 'cancel' | 'confirm' | 'reset'
 type BtnPropsCustom = {
   [key in BtnKeys]: Partial<{ borderColor: string; backgroundColor: string } & ButtonProps>
 }
@@ -33,7 +33,7 @@ const btnPropDefault: BtnPropsCustom = {
     size: 'default',
     icon: Search,
     plain: true,
-    borderColor: getColor(WhatColor.WhiteBorderColor)
+    borderColor: getColor(WhatColor.InitialColor)
   },
   plus: {
     size: 'default',
@@ -41,6 +41,23 @@ const btnPropDefault: BtnPropsCustom = {
     borderColor: getColor(WhatColor.ThemeColor),
     color: getColor(WhatColor.ThemeColor),
     plain: true
+  },
+  cancel: {
+    size: 'default',
+    plain: true,
+    borderColor: getColor(WhatColor.InitialColor)
+  },
+  confirm: {
+    size: 'default',
+    color: getColor(WhatColor.ThemeColor),
+    borderColor: getColor(WhatColor.ThemeColor),
+    plain: true
+  },
+  reset: {
+    size: 'default',
+    icon: Refresh,
+    plain: true,
+    borderColor: getColor(WhatColor.InitialColor)
   }
 }
 const prop = defineProps({
@@ -64,7 +81,7 @@ const prop = defineProps({
 })
 const groupBtnProp = computed(() => {
   const style = {}
-  for (let key in prop) {
+  for (const key in prop) {
     if (prop[key]) {
       style[key] = prop[key]
     }

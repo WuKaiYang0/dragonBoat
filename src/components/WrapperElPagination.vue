@@ -1,7 +1,7 @@
 <template>
   <div class="pagination-wrapper">
     <el-pagination
-      :modelValue="currentPage"
+      :model-value="currentPage"
       :page-size="pageSize"
       size="small"
       :background="false"

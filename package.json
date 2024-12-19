@@ -2,18 +2,21 @@
   "name": "dragonBoat",
   "version": "1.0.0",
   "description": "",
-  "module": "commonjs",
+  "module": "module",
   "main": "main.ts",
   "scripts": {
     "dev": "vite --mode dev",
     "test": "vite --mode test",
     "mock": "vite --mode mock",
-    "build": "vite build --mode prod"
+    "build": "vite build --mode prod",
+    "inspect": "eslint --inspect-config",
+    "lint": "npx eslint src/** --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^10.0.0",
     "@iconify-json/ep": "^1.1.16",
     "@types/node": "^22.1.0",
     "@types/nprogress": "^0.2.3",
@@ -22,6 +25,7 @@
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.27.0",
+    "globals": "^15.14.0",
     "mockjs": "^1.1.0",
     "postcss": "^8.4.40",
     "postcss-preset-env": "^9.6.0",
@@ -33,6 +37,7 @@
     "vite": "^5.3.5",
     "vite-plugin-checker": "^0.7.2",
     "vite-plugin-mock": "^3.0.2",
+    "vue-eslint-parser": "^9.4.3",
     "vue-tsc": "^2.0.29"
   },
   "dependencies": {

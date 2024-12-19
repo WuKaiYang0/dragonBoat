@@ -10,7 +10,7 @@
       <div class="bread">
         <el-divider direction="vertical" />
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item v-for="p in otherStore.getMatchedRoutesTitle">{{
+          <el-breadcrumb-item v-for="(p, index) in otherStore.getMatchedRoutesTitle" :key="index">{{
             p
           }}</el-breadcrumb-item>
         </el-breadcrumb>
@@ -29,14 +29,14 @@
         </i>
         <span style="font-size: 15px">{{ userStore.userInfo?.name }}</span>
         <el-popover
+          ref="popoverRef"
           placement="bottom-end"
           trigger="click"
-          ref="popoverRef"
           :virtual-ref="buttonRef"
           :hide-after="0"
         >
           <template #reference>
-            <div style="margin: 0 10px" ref="buttonRef" v-click-outside="onClickOutside">
+            <div ref="buttonRef" v-click-outside="onClickOutside" style="margin: 0 10px">
               <el-icon v-if="arrowTrigger" @click="arrowTrigger = !arrowTrigger"
                 ><ArrowUpBold
               /></el-icon>
@@ -65,7 +65,7 @@ import Avatar from '@components/svgs/Avatar.vue'
 import { Refresh, Bell, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { useOtherStore } from '@/stores/other'
-import { getCurrentInstance, onMounted, watch, ref, unref, onUnmounted } from 'vue'
+import { getCurrentInstance, onMounted, ref, onUnmounted } from 'vue'
 import { delItem, getItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
 import router from '@/router'
@@ -98,7 +98,7 @@ const onfullscreenchange = () => {
 document.addEventListener('fullscreenchange', onfullscreenchange)
 //页面刷新的情况下
 const getData = async () => {
-  let loadingInstance = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: '正在初始化'
   })
   userStore.fetchUserInfo().finally(() => {

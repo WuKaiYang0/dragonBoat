@@ -1,7 +1,13 @@
 import type { TeamRegister } from '@/typings/user/unit/index'
 import axios from '../../utils/request'
-import type { AllDataInCompItem, BackDataFormat, DataInAthletesType } from '@/typings/common'
-import { LocalStorageKey } from '@/typings/enums'
+import type {
+  AllDataInCompItem,
+  BackDataFormat,
+  CompetitionInfoData,
+  CompetitionItem,
+  CreateCompetitionData,
+  DataInAthletesType
+} from '@/typings/common'
 /**获取邮箱验证码 */
 export const getLoginVerifyByEmail = (email: string) =>
   axios.get<BackDataFormat<null>>(`/login/getVerify?email=${email}`)
@@ -52,6 +58,51 @@ export const getUnitTeamMemberType = (token: string) =>
     }
   })
 
+export const getCompetitionQueryCom = (
+  token: string,
+  data: { page: number; row: number; name?: string; location?: string; introduction?: string }
+) =>
+  axios.post<BackDataFormat<CompetitionInfoData[]>>('/competition/queryCom', data, {
+    headers: {
+      Authorization: token
+    }
+  })
+
+export const postCompetitionCreateCom = (token: string, data: CreateCompetitionData) =>
+  axios.post<BackDataFormat<null>>('/competition/createCom', data, {
+    headers: {
+      Authorization: token
+    }
+  })
+
+export const deleteCompetitionDeleteCom = (token: string, id: number) =>
+  axios.delete<BackDataFormat<null>>(`/competition/deleteCom?id=${id}`, {
+    headers: {
+      Authorization: token
+    }
+  })
+
+export const getCompetitionGroupList = (
+  token: string,
+  data: {
+    page: number
+    pageSize: number
+    name?: string
+    competitionCategory?: string
+    competitionLength?: string
+    competitionId: number
+  }
+) =>
+  axios.post<BackDataFormat<{ datas: CompetitionItem[]; totals: number }>>(
+    '/competition/group/list',
+    data,
+    {
+      headers: {
+        Authorization: token
+      }
+    }
+  )
+
 /**测试 */
 export const test = (body: Record<string, string | number>) =>
   axios.post('/post', body, {
@@ -59,5 +110,3 @@ export const test = (body: Record<string, string | number>) =>
       'Content-Type': 'application/json'
     }
   })
-
-const res = async () => await test({ name: 'wky', age: 18 })

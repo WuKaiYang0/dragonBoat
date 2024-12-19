@@ -3,7 +3,6 @@ import * as icon from '@element-plus/icons-vue'
 import {
   AgeTypeOnDamand,
   CompItemCategoryOnDamand,
-  CompItemStatus,
   NaionTypeOnDamand,
   PeopleTypeOnDamamd,
   SexTypeOnDamand
@@ -28,15 +27,15 @@ export type TagSetting = {
 }
 export type ActiveRoute = Omit<TagSetting, 'active'>
 
-export type Competition = {
+export type CompetitionBaseInfo = {
   /**id */
   id: number
   /**赛事名称 */
   name: string
   /**比赛开始时间 */
-  start_date: Time
+  startDate: Time
   /**比赛结束时间 */
-  end_date: Time
+  endDate: Time
   /**赛事介绍 */
   introduction: string
   /**地点 */
@@ -47,15 +46,17 @@ export type Competition = {
   photo: string
   /**0:报名中，1:截止报名，2:已结束 */
   status: 0 | 1 | 2
+}
+export type CompetitionInfoData = {
   /**服务器存放文件的路径 */
-  file_path: string
+  filePath: string
   /**创建时间 */
-  create_time: Time
+  createTime: Time
   /**更新时间 */
-  update_time: Time
+  updateTime: Time
   /**逻辑删除 */
   deleted: 0 | 1
-}
+} & CompetitionBaseInfo
 export type CompetitionRules = {
   id: number
   comId: number
@@ -70,7 +71,7 @@ export type CompetitionRules = {
   deleted: 0 | 1
   event: CompItemCategoryOnDamand
 }
-export type AllDataInCompItem = Competition & {
+export type AllDataInCompItem = CompetitionBaseInfo & {
   groups: CompetitionRules
 } & { statusVal?: string }
 
@@ -79,4 +80,15 @@ export type AthletesType = '鼓手' | '舵手' | '替补' | '划手' | '锣手'
 export type DataInAthletesType = {
   id: number
   typeName: AthletesType
+}
+export type CreateCompetitionData = Omit<CompetitionBaseInfo, 'id' | 'status'>
+
+export type CompetitionItem = {
+  /**组别 */
+  category: string
+  competitionId: number
+  id: number
+  name: string
+  createTime: Time
+  updateTime: Time
 }

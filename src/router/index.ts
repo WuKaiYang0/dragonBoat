@@ -1,9 +1,6 @@
-import { useOtherStore } from '@/stores/other'
 import { useUserStore } from '@/stores/user'
 import type { Route } from '@/typings/common'
-import { locateRoute } from '@/utils/common'
-import { watch } from 'vue'
-import { createRouter, createWebHistory, useRoute } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -25,6 +22,12 @@ const router = createRouter({
           path: 'teamManagement',
           meta: { title: '队伍管理', icon: 'Location' },
           component: () => import('@/view/TeamManagement/index.vue')
+        },
+        {
+          name: 'EventsManagement',
+          path: 'eventsManagement',
+          meta: { title: '赛事管理', icon: 'Location' },
+          component: () => import('@/view/RacesManagement/index.vue')
         }
       ]
     },
@@ -65,6 +68,14 @@ export const menu: [{ routes: Route[] }] = [
         name: 'TeamManagement',
         meta: {
           title: '队伍管理',
+          icon: 'Location'
+        }
+      },
+      {
+        path: '/eventsManagement',
+        name: 'EventsManagement',
+        meta: {
+          title: '赛事管理',
           icon: 'Location'
         }
       },

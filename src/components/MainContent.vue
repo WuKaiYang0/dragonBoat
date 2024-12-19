@@ -4,15 +4,16 @@
     <main style="overflow: hidden">
       <div class="content-wrapper">
         <div class="tags">
-          <el-icon icon v-if="!otherStore.collapse" @click="otherStore.toggleCollapse()"
+          <el-icon v-if="!otherStore.collapse" icon @click="otherStore.toggleCollapse()"
             ><Fold
           /></el-icon>
-          <el-icon icon v-else @click="otherStore.toggleCollapse()"><Expand /></el-icon>
+          <el-icon v-else icon @click="otherStore.toggleCollapse()"><Expand /></el-icon>
           <el-divider direction="vertical" />
           <el-tag
+            v-for="(tag, index) in dynamicTags"
+            :key="tag.name"
             :closable="index === 0 ? false : true"
             effect="plain"
-            v-for="(tag, index) in dynamicTags"
             class="default"
             :class="{ active: tag.active }"
             @close="handleClose(tag, index)"
@@ -42,11 +43,11 @@ import { useOtherStore } from '@/stores/other'
 import { type ComponentPublicInstance, onMounted, ref, watch } from 'vue'
 import type { TagSetting } from '@/typings/common'
 import router from '@/router'
-import { useRoute } from 'vue-router'
+import { useRoute, type NavigationGuardNext } from 'vue-router'
 import NProgress from 'nprogress'
 const otherStore = useOtherStore()
 const rootRoute = router.getRoutes().find((item) => item.path === '/')
-let redirectRoute = router.getRoutes().find((item) => item.path === rootRoute.redirect)
+const redirectRoute = router.getRoutes().find((item) => item.path === rootRoute.redirect)
 
 const rootTag: TagSetting = {
   active: true,
@@ -64,7 +65,7 @@ const comp = ref<ComponentPublicInstance>()
 const fadeOutToggle = ref(false)
 const fadeInToggle = ref(false)
 const offToggle = ref(false)
-let _next = null as null | Function
+let _next: null | NavigationGuardNext = null
 let _el: HTMLElement | null = null
 const _fadeOutFunc = () => {
   _el?.removeEventListener('animationend', _fadeOutFunc)
@@ -72,8 +73,11 @@ const _fadeOutFunc = () => {
     fadeOutToggle.value = false
     offToggle.value = true
     NProgress.done()
-    _next && _next()
+    if (_next) {
+      _next()
+    }
     _next = null
+    _el = null
   }
 }
 let leavingComp = null
@@ -92,7 +96,7 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-router.afterEach((to, from) => {
+router.afterEach(() => {
   if (!leavingComp) {
     leavingComp = comp.value
   }
@@ -103,6 +107,7 @@ router.afterEach((to, from) => {
   const _fadeInFunc = () => {
     fadeInToggle.value = false
     el.removeEventListener('animationend', _fadeInFunc)
+    el = null
   }
   el.addEventListener('animationend', _fadeInFunc)
 })

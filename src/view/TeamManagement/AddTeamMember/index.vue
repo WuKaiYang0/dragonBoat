@@ -1,10 +1,10 @@
 <template>
   <div class="unit-team-members">
-    <ElCard body-style="flex:1" ref="unitTeamMembers_elcard">
+    <ElCard ref="unitTeamMembers_elcard" body-style="flex:1">
       <el-table
+        v-loading="membersTableLoading"
         :data="teamListMembers"
         style="width: 100%; height: 100%"
-        v-loading="membersTableLoading"
         :max-height="maxHeight"
       >
         <el-table-column type="expand">
@@ -71,14 +71,28 @@
           <template #default="{ row }">
             <WrapperElButton
               style="width: max-content"
+              size="small"
+              btn-type="edit"
+              @click="editMemberHandler(row)"
+              >编辑</WrapperElButton
+            >
+            <!-- <WrapperElButton
+              style="width: max-content"
               :icon="Edit"
               size="small"
               :color="getColor(WhatColor.ThemeColor)"
               :border-color="getColor(WhatColor.ThemeColor)"
               @click="editMemberHandler(row)"
               >编辑</WrapperElButton
-            >
+            > -->
             <WrapperElButton
+              style="width: max-content"
+              btn-type="del"
+              size="small"
+              @click="deleteTeamName(row)"
+              >删除</WrapperElButton
+            >
+            <!-- <WrapperElButton
               style="width: max-content"
               :icon="Delete"
               size="small"
@@ -86,7 +100,7 @@
               :border-color="getColor(WhatColor.DeleteColor)"
               @click="deleteTeamName(row)"
               >删除</WrapperElButton
-            >
+            > -->
           </template>
         </el-table-column>
       </el-table>
@@ -98,9 +112,9 @@
             :page-sizes="[5, 10, 15]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totals"
+            size="default"
             @size-change="onSizeChange"
             @current-change="onCurrentChange"
-            size="default"
           >
           </el-pagination>
         </div>
@@ -355,7 +369,9 @@
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="editMemberForm.type">
-          <el-radio :value="t.id" v-for="t in athletesType"> {{ t.typeName }} </el-radio>
+          <el-radio v-for="t in athletesType" :key="t.id" :value="t.id">
+            {{ t.typeName }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="民族" prop="nation">
@@ -404,10 +420,12 @@
         <el-input v-model.trim="editMemberForm.idCard" style="width: 100%" />
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="unEditNewMember"> 取 消 </el-button>
-      <el-button type="primary" @click="editNewMember"> 确 定 </el-button>
-    </div>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="unEditNewMember"> 取 消 </el-button>
+        <el-button type="primary" @click="editNewMember"> 确 定 </el-button>
+      </div>
+    </template>
   </el-dialog>
 </template>
 <script setup lang="ts">
@@ -422,12 +440,12 @@ import {
   ref,
   watch
 } from 'vue'
-import { getColor, outputAgeAndBirthdayByIdCard } from '@/utils/common'
-import { LocalStorageKey, WhatColor } from '@/typings/enums'
+import { outputAgeAndBirthdayByIdCard } from '@/utils/common'
+import { LocalStorageKey } from '@/typings/enums'
 import { getItem } from '@/utils/localStorage'
 import router from '@/router'
 import type { DataInAthletesType } from '@/typings/common'
-import { Edit, Delete } from '@element-plus/icons-vue'
+import WrapperElButton from '@/components/WrapperElButton.vue'
 const { $message, $requests } = getCurrentInstance().appContext.config.globalProperties
 const onSizeChange = (val: number) => {
   pageSize.value = val
@@ -470,7 +488,7 @@ const deleteTeamName = (memberInfo: TeamMember) => {
         })
       }
     })
-    .catch((err) => {})
+    .catch(() => {})
 }
 const editMemberFormRef = ref<FormInstance>()
 const currentPage = ref(1)
@@ -488,7 +506,7 @@ const props = defineProps({
   teamListOne: {
     required: true,
     type: Object as PropType<UnitTeamListData['datas'][number]>,
-    default: {}
+    default: () => ({})
   },
   searchTeamName: {
     required: true,
@@ -577,12 +595,6 @@ const editMemberFormRules = {
     required: true,
     message: '请填写裤子大小'
   }
-  // fileList: {
-  //   type: 'array',
-  //   required: true,
-  //   message: '请上传照片',
-  //   trigger: 'change'
-  // }
 } as FormRules<TeamMember>
 const editNewMember = async () => {
   const token = getItem(LocalStorageKey.TOKEN)
@@ -629,7 +641,6 @@ const editNewMember = async () => {
       }
     }
   })
-  // const res = await $requests.unitAPI.addUnitTeamMemberAddMember(token, editMemberForm.value)
 }
 const unEditNewMember = () => resetModifyMemberForm()
 const getTeamMembers = async () => {
@@ -646,7 +657,7 @@ const getTeamMembers = async () => {
     name: props.searchTeamName
   })
   const {
-    data: { code, data, message }
+    data: { code, data }
   } = res
   if (code === 200) {
     membersTableLoading.value = false
@@ -665,7 +676,7 @@ const searchTeamMember = () => {
 }
 watch(
   () => props.teamListOne,
-  (newVal) => {
+  () => {
     getTeamMembers().catch((err) => {
       $message.error(err.message)
     })

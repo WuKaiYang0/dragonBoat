@@ -15,7 +15,7 @@
             <!-- <img src="/public/statics/login-d579ccd3.png" alt="" class="login-box-img" /> -->
             <!-- <img src="/public/statics/login_background.jpg" alt="" class="login-box-img" /> -->
           </div>
-          <div login-frame ref="animationRef" v-loading="loading" element-loading-text="登录中">
+          <div ref="animationRef" v-loading="loading" login-frame element-loading-text="登录中">
             <div class="login-frame-content">
               <div
                 style="
@@ -29,7 +29,7 @@
                 <span style="font-size: 32px; color: #2d51e6; font-weight: 700"
                   >{{ loginMode }}登录</span
                 >
-                <img src="" alt="" ref="dragonBoatLogo" style="object-fit: contain; height: 50px" />
+                <img ref="dragonBoatLogo" src="" alt="" style="object-fit: contain; height: 50px" />
               </div>
               <div class="login-frame-input">
                 <el-form
@@ -78,11 +78,11 @@
                         type="info"
                         plain
                         style="height: var(--el-component-size-large); width: 100px"
-                        @click="sendCodeHandler"
                         :disabled="sendCodeIsDisable"
+                        @click="sendCodeHandler"
                       >
                         <span v-if="!sendCodeIsDisable">发送验证码</span>
-                        <template # v-if="sendCodeIsDisable">
+                        <template v-if="sendCodeIsDisable">
                           <el-countdown
                             format="已发送ss"
                             :value="value1"
@@ -175,7 +175,7 @@ const accountFormRef = ref<FormInstance>()
 const animationRef = ref<HTMLElement>()
 const sendCodeIsDisable = ref(false)
 type LoginMode = '邮箱' | '账号'
-let loginMode = ref<LoginMode>('账号')
+const loginMode = ref<LoginMode>('账号')
 const loading = ref(false)
 const c = {
   邮箱: {
@@ -226,7 +226,7 @@ const submitForm = async (mode: LoginMode) => {
           res = await $requests.commonAPI.postLoginByAccount(accountForm.value)
         }
         const {
-          data: { code, message, data }
+          data: { code, data }
         } = res
         if (code == 200) {
           $message.success({

@@ -120,22 +120,22 @@
         </el-divider>
       </el-card>
       <!-- 竞赛项目+裁判组 -->
-      <el-dialog width="80%" v-model="outerVisible" title="Tips">
+      <el-dialog v-model="outerVisible" width="80%" title="Tips">
         <!-- 竞赛项目+裁判组 -->
         <SecondMatch
+          v-model:second-com-id="secondComId"
+          v-model:inner-visible="innerVisible"
           :com-id="compId"
-          :second-com-id.sync="secondComId"
-          :inner-visible.sync="innerVisible"
         />
-        <el-dialog :visible.sync="innerVisible" width="80%" append-to-body>
+        <el-dialog v-model:visible="innerVisible" width="80%" append-to-body>
           <!-- 竞赛项目详细信息 -->
           <MatchIntroduction :com-id="compId" :second-com-id="secondComId" />
         </el-dialog>
       </el-dialog>
       <!-- 添加/修改赛事 -->
       <el-dialog
+        v-model:visible="dialogTableVisible"
         :title="dialogTableStatus + '赛事'"
-        :visible.sync="dialogTableVisible"
         :before-close="formDialogCloseBeforeHandler"
       >
         <!-- <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-form"> -->
@@ -187,7 +187,9 @@
               :file-list="form.fileList"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">tip：只能上传pdf文件</div>
+              <template #tip>
+                <div class="el-upload__tip">tip：只能上传pdf文件</div>
+              </template>
             </el-upload>
           </el-form-item>
         </el-form>
@@ -455,7 +457,6 @@ import type { AllDataInCompItem } from '@/typings/common'
 import { CompItemStatus } from '@/typings/enums'
 import { getCurrentInstance, onMounted, ref, watch, defineProps } from 'vue'
 import { ArrowRightBold, RefreshRight, Search } from '@element-plus/icons-vue'
-import type { CollapseActiveName, CollapseModelValue } from 'element-plus'
 
 const value2 = ref('')
 const value = ref('')
@@ -476,7 +477,6 @@ const secondComId = ref('')
 const VUE_APP_BASE_URL = ref(import.meta.env.DB_PROXY_URl)
 const dialogTableVisible = ref(false)
 const dialogTableStatus = ref('添加')
-const compInfo = ref({})
 const form = ref({
   name: '',
   startDate: '',
@@ -486,60 +486,15 @@ const form = ref({
   regulation: '',
   fileList: []
 })
-const rules = ref({
-  name: [
-    { required: true, message: '请输入赛事名称', trigger: 'blur' },
-    { min: 3, message: '长度在3个字符以上', trigger: 'blur' }
-  ],
-  deadline: [
-    {
-      required: true,
-      message: '请选择报名截止日期',
-      trigger: 'change'
-    }
-  ],
-  startDate: [
-    {
-      required: true,
-      message: '请选择比赛开始日期',
-      trigger: 'change'
-    }
-  ],
-  endDate: [
-    {
-      required: true,
-      message: '请选择比赛结束日期',
-      trigger: 'change'
-    }
-  ],
-  location: [
-    {
-      type: 'string',
-      required: true,
-      message: '请填写地点',
-      trigger: 'blur'
-    }
-  ],
-  fileList: [{ type: 'array', required: true, message: '请上传竞赛规程pdf文件' }]
-})
-const basicBtnWidth = ref(70)
 const allBtnWidth = ref('')
 const formAppearBeforeHandler = (status, form1) => {
   if (form1) {
-    const fileList = {
-      fileList: [
-        {
-          url: VUE_APP_BASE_URL.value + form1.regulation,
-          name: form1.regulation
-        }
-      ]
-    }
     Object.assign(form.value, form1) //Object.assign赋值不会更改comp.row的值
   }
   dialogTableStatus.value = status
   dialogTableVisible.value = true
 }
-const formDialogCloseBeforeHandler = (done) => {
+const formDialogCloseBeforeHandler = () => {
   //清除上一个打开的赛事信息，不能赋{}
   // form.value = Object.assign({}, this.$options.data().form)
   // this.$refs.form.resetFields()
@@ -550,6 +505,8 @@ const matchEvent = (comp) => {
   outerVisible.value = true
 }
 const deleteCompHandler = (comp) => {
+  console.log(comp)
+
   // try {
   //   this.$confirm(`此操作将永久删除"${comp.name}"大赛, 是否继续?`, '提示', {
   //     confirmButtonText: '确定',
@@ -628,11 +585,11 @@ const handleRemove = () => {
 const handleExceed = (files) => {
   $message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件。`)
 }
-const beforeRemove = (file) => {
+const beforeRemove = () => {
   // return $message. .$confirm(`确定移除 ${file.name}？`)
   return false
 }
-const onChange = (file, fileList) => {
+const onChange = () => {
   // if (!file.raw.type.includes('pdf')) {
   //   fileList.length = 0
   //   this.$message.warning(`只能上传pdf文件类型`)
@@ -655,7 +612,7 @@ watch(comps, (val) => {
     comp['statusVal'] = CompItemStatus[status]
   })
 })
-watch(props, (val) => {}, { immediate: true })
+watch(props, () => {}, { immediate: true })
 onMounted(() => {
   $requests.commonAPI
     .postQueryCompetition({

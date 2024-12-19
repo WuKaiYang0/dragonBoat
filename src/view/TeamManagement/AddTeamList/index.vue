@@ -10,19 +10,15 @@
             @change="searchChangeHandler"
           />
           <WrapperElButton
+            btn-type="search"
             size="small"
-            plain
-            :icon="Search"
             style="margin-left: 2px"
             @click="searchHandler"
             >查询</WrapperElButton
           >
           <WrapperElButton
+            btn-type="plus"
             size="small"
-            plain
-            :icon="Plus"
-            :border-color="getColor(WhatColor.ThemeColor)"
-            :color="getColor(WhatColor.ThemeColor)"
             @click="addTeamListDialogVisible = !addTeamListDialogVisible"
             >新增</WrapperElButton
           >
@@ -35,40 +31,10 @@
           :class="{ active: currentIndex === index }"
           @click="switchoverActive(index, tl)"
         >
-          <!-- <div style="display: flex; align-items: center; gap: 5px">
-            <el-input
-              v-model="t.n"
-              style="width: 240px"
-              size="small"
-              placeholder="Please Input"
-              v-if="t.isUpdateName"
-              @click.stop=""
-            />
-            <span style="font-weight: bolder; font-size: 14px" v-else>{{ t.n }}</span>
-          </div> -->
           {{ tl.name }}<span style="font-size: 13px">(队伍名称)</span>
         </li>
       </ul>
       <template #footer>
-        <!-- <el-pagination
-          :modelValue:current-page="currentPage"
-          :page-size="pageSize"
-          size="small"
-          :background="false"
-          layout="total, prev, pager, next"
-          :total="totals"
-          @update:current-page="onCurrentChange"
-        >
-        </el-pagination> -->
-        <!-- <WrapperElPagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 30]"
-          size="small"
-          :layout="'total, prev, pager, next'"
-          :total="totals"
-          @update:current-page="onCurrentChange"
-        ></WrapperElPagination> -->
         <div class="pagination-wrapper">
           <el-pagination
             v-model="currentPage"
@@ -92,7 +58,7 @@
     align-center
     :before-close="addTeamListBeforeCloseHandler"
   >
-    <ElForm :model="addTeamListForm" ref="addTeamListFormRef">
+    <ElForm ref="addTeamListFormRef" :model="addTeamListForm">
       <ElFormItem
         label="队伍名称"
         prop="name"
@@ -110,28 +76,19 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import WrapperElPagination from '@/components/WrapperElPagination.vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import { LocalStorageKey, WhatColor } from '@/typings/enums'
+import { LocalStorageKey } from '@/typings/enums'
 import { getItem } from '@/utils/localStorage'
 import { type DialogBeforeCloseFn, type FormInstance, vLoading } from 'element-plus'
-import { getCurrentInstance, onMounted, type PropType, ref, watch } from 'vue'
-import { Search, Plus } from '@element-plus/icons-vue'
+import { getCurrentInstance, onMounted, ref, type PropType } from 'vue'
 import type { UnitTeamListData } from '@/typings/user/unit'
-import { getColor } from '@/utils/common'
+import WrapperElButton from '@/components/WrapperElButton.vue'
 const { $message, $requests } = getCurrentInstance().appContext.config.globalProperties
 const teamListOne = defineModel({
-  required: true
+  required: true,
+  type: Object as PropType<UnitTeamListData['datas'][number]>
 })
-// defineProps({
-//   teamListOne: {
-//     type: Object as PropType<UnitTeamListData['datas'][number]>,
-//     required: true
-//   }
-// })
-// defineEmits()
-// const teamListOne = defineModel<UnitTeamListData['datas'][number]>({ required: true })
 const loading = ref(true)
 const search = ref('')
 const currentPage = ref(1)
@@ -149,9 +106,6 @@ const searchChangeHandler = (val: string | number) => {
     getUnitTeamList()
   }
 }
-
-// const teamList = ref<{ name: string }[]>([{ name: '1' }, { name: '1' }])
-
 const addTeamList = () => {
   addTeamListFormRef.value.validate(async (valid, fields) => {
     if (valid) {
@@ -162,7 +116,7 @@ const addTeamList = () => {
       }
       try {
         const {
-          data: { code, data, message }
+          data: { code, message }
         } = await $requests.unitAPI.addTeamListByUnitId(token, {
           name: addTeamListForm.value.name,
           unitId: userStore.userInfo.id
@@ -204,7 +158,7 @@ const updateTeamName = () => {
           name: updateTeamNameForm.value.name
         })
         const {
-          data: { code, message }
+          data: { code }
         } = res
         if (code === 200) {
           $message.success({ message: '修改成功' })
@@ -214,7 +168,7 @@ const updateTeamName = () => {
         }
         // updateTeamNameDialogVisible.value = false
       } catch (error) {
-        $message.error({ message: '出错' })
+        $message.error({ message: error.message })
       }
     } else {
       console.log('error submit!', fields)
@@ -276,7 +230,9 @@ const getUnitTeamList = async () => {
         message
       })
     }
-  } catch (error) {}
+  } catch (error) {
+    $message.error(error.message)
+  }
 }
 defineExpose({ getUnitTeamList })
 onMounted(() => {
@@ -290,18 +246,33 @@ onMounted(() => {
   .el-card {
     display: flex;
     flex-direction: column;
-  }
-  li {
-    height: 40px;
-    margin-bottom: 5px;
-    padding: 0 20px;
-    line-height: 40px;
-    cursor: pointer;
-  }
-  li.active {
-    background-color: #e8f1ff;
-    font-weight: 700;
-    color: #1677ff;
+    ul {
+      font-size: 14px;
+      padding: 0 15px;
+    }
+    li {
+      height: 37px;
+      margin-bottom: 2px;
+      padding: 0 10px;
+      line-height: 37px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    li.active {
+      background-color: #e8f1ff;
+      font-weight: bold;
+      color: #1677ff;
+    }
+    li:not(.active):hover {
+      background-color: #f5f5f5;
+    }
+    li.active:hover {
+      background-color: #d0e4ff;
+    }
+    :deep(.el-card__header) {
+      border-bottom: unset;
+      padding-top: 15px;
+    }
   }
 }
 </style>
