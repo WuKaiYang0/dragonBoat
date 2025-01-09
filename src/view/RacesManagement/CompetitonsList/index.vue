@@ -10,23 +10,24 @@
               placeholder="模糊搜索"
               @change="searchChangeHandler"
             />
-            <WrapperElButton btn-type="search" size="default" @click="searchHandler"
+            <WrapperElButton btn-type="search" size="default" theme="water" @click="searchHandler"
               >查询</WrapperElButton
             >
           </div>
           <div class="btns">
-            <WrapperElButton btn-type="plus" size="default" @click="newHandler"
+            <WrapperElButton btn-type="plus" size="default" theme="blueberry" @click="newHandler"
               >新建</WrapperElButton
             >
             <WrapperElButton
               btn-type="edit"
+              theme="orange"
               size="default"
               :border-color="'#faad14'"
               :color="'#faad14'"
               @click="editHandler"
               >修改</WrapperElButton
             >
-            <WrapperElButton btn-type="del" size="default" @click="deleteComp"
+            <WrapperElButton btn-type="del" size="default" theme="rose" @click="deleteComp"
               >删除</WrapperElButton
             >
           </div>
@@ -188,11 +189,12 @@
       </ElForm>
       <template #footer>
         <div class="dialog-footer">
-          <WrapperElButton btn-type="cancel" size="default" @click="cancelHandler"
+          <WrapperElButton btn-type="cancel" size="default" theme="water" @click="cancelHandler"
             >取消</WrapperElButton
           >
           <WrapperElButton
             btn-type="confirm"
+            theme="blueberry"
             size="default"
             :background-color="getColor(WhatColor.ThemeColor)"
             :color="getColor(WhatColor.WhiteColor)"

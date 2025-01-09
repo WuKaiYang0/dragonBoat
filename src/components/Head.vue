@@ -15,43 +15,49 @@
           }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <div class="operations">
-        <div class="operation">
-          <el-icon icon><Refresh /></el-icon>
+      <div style="display: flex">
+        <IconsOperationPanel
+          :refresh="{
+            switch: true,
+            handler: [refreshHandler]
+          }"
+        >
           <el-icon icon><Bell /></el-icon>
           <el-icon @click="toggleFullScreen"
             ><FullScreen v-if="!isFullScreen"></FullScreen> <OffScreen v-else></OffScreen
           ></el-icon>
+        </IconsOperationPanel>
+        <div class="info">
+          <el-divider direction="vertical" />
+          <i class="avatar">
+            <Avatar></Avatar>
+          </i>
+          <span style="font-size: 15px">{{ userStore.userInfo?.name }}</span>
+          <el-popover
+            ref="popoverRef"
+            placement="bottom-end"
+            trigger="click"
+            :virtual-ref="buttonRef"
+            :hide-after="0"
+          >
+            <template #reference>
+              <div ref="buttonRef" v-click-outside="onClickOutside" style="margin: 0 10px">
+                <el-icon v-if="arrowTrigger" @click="arrowTrigger = !arrowTrigger"
+                  ><ArrowUpBold
+                /></el-icon>
+                <el-icon v-else @click="arrowTrigger = !arrowTrigger"><ArrowDownBold /></el-icon>
+              </div>
+            </template>
+            <template #default>
+              <ul>
+                <li @click="logout">
+                  <el-icon><SwitchButton /></el-icon>
+                  <span>退出登录</span>
+                </li>
+              </ul>
+            </template>
+          </el-popover>
         </div>
-        <el-divider direction="vertical" />
-        <i class="avatar">
-          <Avatar></Avatar>
-        </i>
-        <span style="font-size: 15px">{{ userStore.userInfo?.name }}</span>
-        <el-popover
-          ref="popoverRef"
-          placement="bottom-end"
-          trigger="click"
-          :virtual-ref="buttonRef"
-          :hide-after="0"
-        >
-          <template #reference>
-            <div ref="buttonRef" v-click-outside="onClickOutside" style="margin: 0 10px">
-              <el-icon v-if="arrowTrigger" @click="arrowTrigger = !arrowTrigger"
-                ><ArrowUpBold
-              /></el-icon>
-              <el-icon v-else @click="arrowTrigger = !arrowTrigger"><ArrowDownBold /></el-icon>
-            </div>
-          </template>
-          <template #default>
-            <ul>
-              <li @click="logout">
-                <el-icon><SwitchButton /></el-icon>
-                <span>退出登录</span>
-              </li>
-            </ul>
-          </template>
-        </el-popover>
       </div>
     </div>
   </div>
@@ -59,10 +65,8 @@
 
 <script setup lang="ts">
 import DragonBoatLogo from '@components/svgs/DragonBoatLogo.vue'
-import FullScreen from './svgs/FullScreen.vue'
-import OffScreen from './svgs/OffScreen.vue'
 import Avatar from '@components/svgs/Avatar.vue'
-import { Refresh, Bell, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
+import { ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { useOtherStore } from '@/stores/other'
 import { getCurrentInstance, onMounted, ref, onUnmounted } from 'vue'
@@ -70,12 +74,14 @@ import { delItem, getItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
 import router from '@/router'
 import { ClickOutside as vClickOutside, ElLoading } from 'element-plus'
-
+import IconsOperationPanel from './IconsOperationPanel.vue'
 const { $requests, $message } = getCurrentInstance()!.appContext.config.globalProperties
 const userStore = useUserStore()
 const otherStore = useOtherStore()
-// const routeTitleArr = ref<string[]>([])
 const isFullScreen = ref(false)
+const refreshHandler = () => {
+  router.go(0)
+}
 const toggleFullScreen = () => {
   if (!document.fullscreenElement) {
     //关闭全屏
@@ -184,6 +190,11 @@ onMounted(() => {
         padding: 0 5px;
         font-size: 20px;
       }
+    }
+    .info {
+      display: flex;
+      align-items: center;
+      height: 100%;
       .avatar {
         font-size: 32px;
         display: flex;

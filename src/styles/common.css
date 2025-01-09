@@ -6,12 +6,11 @@ html,
 body {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 #app {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
-  min-width: var(--web-min-width);
+  /* min-width: var(--web-min-width); */
 }
 .clearfix::after {
   content: '';
@@ -61,6 +60,14 @@ body {
 }
 [m-20] {
   margin: 20px auto;
+}
+.fullScreen {
+  position: fixed !important;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 99999;
 }
 ul {
   list-style: unset;

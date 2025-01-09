@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <Sidebar></Sidebar>
-    <main style="overflow: hidden">
+    <main style="overflow: auto">
       <div class="content-wrapper">
         <div class="tags">
           <el-icon v-if="!otherStore.collapse" icon @click="otherStore.toggleCollapse()"
@@ -26,12 +26,23 @@
           </el-tag>
         </div>
         <router-view v-slot="{ Component }">
-          <component
-            :is="Component"
-            ref="comp"
-            :class="{ fadeOut: fadeOutToggle, fadeIn: fadeInToggle, off: offToggle }"
-          />
+          <FadeShiftTransition>
+            <component :is="Component" style="overflow: auto" />
+          </FadeShiftTransition>
         </router-view>
+      </div>
+      <div style="display: flex; flex-direction: column; margin-top: var(--main-padding)">
+        <ElText type="info" size="small">
+          <ElLink
+            type="info"
+            href="https://github.com/WuKaiYang0/dragonBoat"
+            :target="Target._blank"
+            style="font-size: inherit"
+          >
+            GitHub
+          </ElLink>
+        </ElText>
+        <ElText type="info" size="small">Copyright © 2024 SCNU Students</ElText>
       </div>
     </main>
   </div>
@@ -40,15 +51,20 @@
 <script setup lang="ts">
 import Sidebar from './Sidebar.vue'
 import { useOtherStore } from '@/stores/other'
-import { type ComponentPublicInstance, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import type { TagSetting } from '@/typings/common'
 import router from '@/router'
-import { useRoute, type NavigationGuardNext } from 'vue-router'
-import NProgress from 'nprogress'
+import { useRoute } from 'vue-router'
+import FadeShiftTransition from './transition/FadeShiftTransition.vue'
 const otherStore = useOtherStore()
 const rootRoute = router.getRoutes().find((item) => item.path === '/')
 const redirectRoute = router.getRoutes().find((item) => item.path === rootRoute.redirect)
-
+enum Target {
+  '_blank' = '_blank',
+  '_parent' = '_parent',
+  '_self' = '_self',
+  '_top' = '_top'
+}
 const rootTag: TagSetting = {
   active: true,
   fullPath: redirectRoute.path,
@@ -61,56 +77,6 @@ const handleClick = (tag: TagSetting) => {
   tag.active = true
   router.push(tag.fullPath)
 }
-const comp = ref<ComponentPublicInstance>()
-const fadeOutToggle = ref(false)
-const fadeInToggle = ref(false)
-const offToggle = ref(false)
-let _next: null | NavigationGuardNext = null
-let _el: HTMLElement | null = null
-const _fadeOutFunc = () => {
-  _el?.removeEventListener('animationend', _fadeOutFunc)
-  if (fadeOutToggle.value) {
-    fadeOutToggle.value = false
-    offToggle.value = true
-    NProgress.done()
-    if (_next) {
-      _next()
-    }
-    _next = null
-    _el = null
-  }
-}
-let leavingComp = null
-router.beforeEach((to, from, next) => {
-  leavingComp = null
-  leavingComp = comp.value
-  _el = leavingComp?.$el
-  _next = next
-  if (_el && !fadeOutToggle.value) {
-    NProgress.configure({ showSpinner: false })
-    NProgress.start()
-    fadeOutToggle.value = true
-    offToggle.value = false
-    _el?.addEventListener('animationend', _fadeOutFunc)
-  } else {
-    next()
-  }
-})
-router.afterEach(() => {
-  if (!leavingComp) {
-    leavingComp = comp.value
-  }
-  const comingComp = comp.value
-  let el: HTMLElement | null = comingComp?.$el
-  fadeInToggle.value = true
-  offToggle.value = false
-  const _fadeInFunc = () => {
-    fadeInToggle.value = false
-    el.removeEventListener('animationend', _fadeInFunc)
-    el = null
-  }
-  el.addEventListener('animationend', _fadeInFunc)
-})
 watch(
   useRoute(),
   (currnetRoute) => {
@@ -153,71 +119,28 @@ onMounted(() => {
   otherStore.setRedirectRoute()
 })
 </script>
-
-<style>
-@keyframes opacity_fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes opacity_fadeOut {
-  100% {
-    opacity: 0;
-  }
-}
-@keyframes translateX_fadeIn {
-  0% {
-    transform: translateX(-60px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
-}
-@keyframes translateX_fadeOut {
-  100% {
-    transform: translateX(60px);
-  }
-}
-.off {
-  display: none;
-}
-.fadeIn {
-  animation:
-    opacity_fadeIn 0.2s ease-out forwards,
-    translateX_fadeIn 0.25s ease-out forwards;
-}
-.fadeOut {
-  animation:
-    opacity_fadeOut 0.25s ease-out forwards,
-    translateX_fadeOut 0.2s ease-out forwards;
-}
-</style>
-
 <style scoped>
 .content {
   display: flex;
   flex: 1;
-  /* height: calc(100% - var(--main-head-height)); */
+  height: calc(100% - var(--main-head-height));
 
   main {
     background-color: #f0f2f5;
     width: 100%;
-    padding: 15px;
+    padding: 10px 15px 15px 15px;
     .content-wrapper {
       height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      /* background-color: var(--main-background-color); */
+      gap: 10px;
       .tags {
         height: var(--main-tags-height);
         background-color: var(--main-background-color);
         display: flex;
         align-items: center;
         padding-left: 5px;
+        flex-shrink: 0;
         .default {
           box-sizing: border-box;
           height: calc(100% - 3px);

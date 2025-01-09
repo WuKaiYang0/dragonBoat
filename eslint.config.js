@@ -23,7 +23,8 @@ module.exports = typescriptEslint.config(
     },
     rules: {
       'vue/multi-word-component-names': 0,
-      '@typescript-eslint/no-unused-expressions': 0
+      '@typescript-eslint/no-unused-expressions': 0,
+      '@typescript-eslint/no-unused-vars': 1
     }
   },
   eslintConfigPrettier

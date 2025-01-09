@@ -70,6 +70,7 @@ const setSideBarAuto = () => {
 }
 onMounted(() => {
   window.addEventListener('resize', setSideBarAuto)
+  setSideBarAuto()
 })
 onUnmounted(() => {
   window.removeEventListener('resize', setSideBarAuto)

@@ -5,7 +5,8 @@ export enum WhatColor {
   ThemeColor = '#4060c7',
   InitialColor = '#dcdfe6',
   DeleteColor = '#f56c6c',
-  WhiteColor = '#ffffff'
+  WhiteColor = '#ffffff',
+  orangeColor = '#dd7f02'
 }
 export enum CompItemCategoryOnDamand {
   '直道竞速赛100米赛程',

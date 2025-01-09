@@ -93,7 +93,7 @@ export const updateUnitTeamMember = (token: string, data: TeamMember) =>
   })
 
 export const deleteUnitTeamMember = (token: string, id: number) =>
-  axios.delete(`/unit/team/member/deleteMember?id=${id}`, {
+  axios.delete<BackDataFormat<null>>(`/unit/team/member/deleteMember?id=${id}`, {
     headers: {
       Authorization: token
     }

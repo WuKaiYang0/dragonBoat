@@ -3,6 +3,7 @@ import '@styles/variables.css'
 import '@styles/common.css'
 import '@styles/elementUI.css'
 import 'nprogress/nprogress.css'
+import 'animate.css'
 //加入标签
 const metaNode = document.createElement('link')
 import logo from '../public/statics/logo.png'

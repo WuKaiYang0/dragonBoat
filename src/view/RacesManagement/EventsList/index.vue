@@ -87,10 +87,11 @@
                 size="default"
                 :border-color="getColor(WhatColor.ThemeColor)"
                 :color="getColor(WhatColor.ThemeColor)"
+                theme="blueberry"
                 @click="getData"
                 >查询</WrapperElButton
               >
-              <WrapperElButton btn-type="reset" size="default" @click="resetHandler"
+              <WrapperElButton btn-type="reset" size="default" theme="water" @click="resetHandler"
                 >重置</WrapperElButton
               >
             </div>

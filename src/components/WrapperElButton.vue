@@ -9,84 +9,99 @@ import { getColor } from '@/utils/common'
 import { ElButton, buttonProps, type ButtonProps } from 'element-plus'
 import { Delete, Edit, Plus, Search, Refresh } from '@element-plus/icons-vue'
 import { computed, type PropType } from 'vue'
-type BtnKeys = 'del' | 'edit' | 'search' | 'plus' | 'cancel' | 'confirm' | 'reset'
-type BtnPropsCustom = {
-  [key in BtnKeys]: Partial<{ borderColor: string; backgroundColor: string } & ButtonProps>
+type BtnKeys = 'del' | 'edit' | 'search' | 'plus' | 'cancel' | 'confirm' | 'reset' | 'link'
+type ThemeColor = 'rose' | 'orange' | 'water' | 'blueberry'
+type ColorAttr = { color: string; backgroundColor: string; borderColor: string }
+type BtnBasePropCustom = {
+  [key in BtnKeys]: Partial<ColorAttr & ButtonProps>
 }
-
-const btnPropDefault: BtnPropsCustom = {
+type BtnColorPropCustom = {
+  [key in ThemeColor]: Partial<{ color: string; borderColor: string; backgroundColor: string }>
+}
+const btnBasePropDefault: BtnBasePropCustom = {
+  link: {
+    link: true,
+    type: 'primary',
+    borderColor: 'transparent'
+  },
   del: {
-    size: 'default',
     icon: Delete,
-    color: getColor(WhatColor.DeleteColor),
-    borderColor: getColor(WhatColor.DeleteColor),
     plain: true
   },
   edit: {
-    size: 'default',
     icon: Edit,
-    color: getColor(WhatColor.ThemeColor),
-    borderColor: getColor(WhatColor.ThemeColor),
     plain: true
   },
   search: {
-    size: 'default',
     icon: Search,
-    plain: true,
-    borderColor: getColor(WhatColor.InitialColor)
+    plain: true
   },
   plus: {
-    size: 'default',
     icon: Plus,
-    borderColor: getColor(WhatColor.ThemeColor),
-    color: getColor(WhatColor.ThemeColor),
     plain: true
   },
   cancel: {
-    size: 'default',
-    plain: true,
-    borderColor: getColor(WhatColor.InitialColor)
+    plain: true
   },
   confirm: {
-    size: 'default',
-    color: getColor(WhatColor.ThemeColor),
-    borderColor: getColor(WhatColor.ThemeColor),
     plain: true
   },
   reset: {
-    size: 'default',
     icon: Refresh,
-    plain: true,
+    plain: true
+  }
+}
+const themeColor: BtnColorPropCustom = {
+  rose: {
+    color: getColor(WhatColor.DeleteColor),
+    borderColor: getColor(WhatColor.DeleteColor)
+  },
+  blueberry: {
+    color: getColor(WhatColor.ThemeColor),
+    borderColor: getColor(WhatColor.ThemeColor)
+  },
+  orange: {
+    color: getColor(WhatColor.orangeColor),
+    borderColor: getColor(WhatColor.orangeColor)
+  },
+  water: {
     borderColor: getColor(WhatColor.InitialColor)
   }
 }
+
 const prop = defineProps({
   btnType: {
     type: String as PropType<BtnKeys>,
     required: true
   },
-  color: {
-    type: String,
-    default: ''
+  customTheme: {
+    type: Object as PropType<ColorAttr>,
+    default: () => ({ color: '', backgroundColor: '', borderColor: '' })
   },
-  backgroundColor: {
-    type: String,
-    default: ''
+  theme: {
+    type: String as PropType<ThemeColor>,
+    required: true
   },
-  borderColor: { type: String, default: '' },
   size: {
     type: buttonProps['size'].type,
     required: true
   }
 })
 const groupBtnProp = computed(() => {
-  const style = {}
-  for (const key in prop) {
-    if (prop[key]) {
-      style[key] = prop[key]
+  const customThemeStyle = {}
+  const customTheme = prop.customTheme
+  for (const key in customTheme) {
+    if (customTheme[key]) {
+      customThemeStyle[key] = customTheme[key]
     }
   }
-  return Object.assign(btnPropDefault[prop.btnType], style)
+  return Object.assign(
+    {},
+    themeColor[prop.theme],
+    btnBasePropDefault[prop.btnType],
+    customThemeStyle,
+    { size: prop.size }
+  )
 })
 </script>
 <style scoped>
