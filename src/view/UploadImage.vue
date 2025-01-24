@@ -13,11 +13,11 @@
       <i slot="default" class="el-icon-plus"></i>
       <template slot="file" slot-scope="{ file }">
         <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
-        <span class="el-upload-list__item-actions">
-          <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+        <ElText class="el-upload-list__item-actions">
+          <ElText class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
             <i class="el-icon-zoom-in"></i>
-          </span>
-        </span>
+          </ElText>
+        </ElText>
       </template>
       <div slot="tip" class="el-upload__tip">
         只能一个上传jpg/png文件，最后上传的图片会覆盖上一个
@@ -42,17 +42,21 @@
     <template #file="{ file }">
       <div>
         <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
-        <span class="el-upload-list__item-actions">
-          <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+        <ElText class="el-upload-list__item-actions">
+          <ElText class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
             <el-icon><zoom-in /></el-icon>
-          </span>
-          <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+          </ElText>
+          <ElText
+            v-if="!disabled"
+            class="el-upload-list__item-delete"
+            @click="handleDownload(file)"
+          >
             <el-icon><Download /></el-icon>
-          </span>
-          <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
+          </ElText>
+          <ElText v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
             <el-icon><Delete /></el-icon>
-          </span>
-        </span>
+          </ElText>
+        </ElText>
       </div>
     </template>
     <template #tip>

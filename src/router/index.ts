@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      meta: {},
+      meta: { isProgress: true },
       component: () => import('@view/Home.vue'),
       redirect: '/home',
       children: [
@@ -140,7 +140,13 @@ export const menu: [{ routes: Route[] }] = [
     ]
   }
 ]
+import NProgress from 'nprogress'
 router.beforeEach((to, from, next) => {
+  const isProgressRoute = to.matched[0]
+  if (isProgressRoute.meta.isProgress && from.meta.isProgress) {
+    NProgress.configure({ showSpinner: false })
+    NProgress.start()
+  }
   const userStore = useUserStore()
   if (to.name === 'Login' && userStore.getUserInfo.id) {
     next({ name: from.name })

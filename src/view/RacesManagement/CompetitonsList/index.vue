@@ -42,7 +42,7 @@
               :class="{ active: currentIndex === index }"
               @click="switchoverActive(index, comp)"
             >
-              {{ comp.name }}<span style="font-size: 13px"></span>
+              {{ comp.name }}<ElText style="font-size: 13px"></ElText>
             </li>
           </ul>
         </div>

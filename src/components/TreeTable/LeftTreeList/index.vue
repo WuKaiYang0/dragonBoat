@@ -18,7 +18,7 @@
               :class="{ active: currentIndex === index }"
               @click="switchoverActive(index, tl)"
             >
-              {{ tl.name }}<span style="font-size: 13px">(队伍名称)</span>
+              {{ tl.name }}<ElText style="font-size: 13px"></ElText>
             </li>
           </TransitionGroup>
         </el-scrollbar>

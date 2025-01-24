@@ -2,6 +2,7 @@
   //哪些文件需要编译
   "include": ["src/**/*", "src/**/*.vue", "typings/**/*"],
   "compilerOptions": {
+    "isolatedModules": true,
     // 为每个编译后的 .ts 文件生成相应的 .d.ts 类型声明文件
     "declaration": false,
     //用于不允许隐式 any 类型。(解决了pinia中actions下方法的this引用 没有类型提示的问题)
@@ -13,7 +14,7 @@
     //启用严格的 bind、call 和 apply 方法检查
     "strictBindCallApply": true,
     // 提供了一组全局变量和类型声明
-    "lib": ["DOM", "ES2020"],
+    "lib": ["DOM", "es2023"],
     //跳过node_modules检测错误，跳过所有类型声明文件的类型检查
     "skipLibCheck": true,
     //不生成JavaScript文件（只做类型检查，tsc）

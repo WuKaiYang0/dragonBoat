@@ -1,62 +1,77 @@
 <template>
   <div class="head">
-    <div class="head-left" @click="router.replace({ name: 'home' })">
-      <i class="logo-box">
-        <DragonBoatLogo></DragonBoatLogo>
-      </i>
-      Dragon Boat
-    </div>
-    <div class="head-right">
-      <div class="bread">
-        <el-divider direction="vertical" />
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item v-for="(p, index) in otherStore.getMatchedRoutesTitle" :key="index">{{
-            p
-          }}</el-breadcrumb-item>
-        </el-breadcrumb>
-      </div>
-      <div style="display: flex">
-        <IconsOperationPanel
-          :refresh="{
-            switch: true,
-            handler: [refreshHandler]
-          }"
-        >
-          <el-icon icon><Bell /></el-icon>
-          <el-icon @click="toggleFullScreen"
-            ><FullScreen v-if="!isFullScreen"></FullScreen> <OffScreen v-else></OffScreen
-          ></el-icon>
-        </IconsOperationPanel>
-        <div class="info">
-          <el-divider direction="vertical" />
-          <i class="avatar">
-            <Avatar></Avatar>
+    <div ref="headWrapperRef" class="head-wrapper">
+      <div ref="headLeftRef" class="head-left" @click="router.replace({ name: 'home' })">
+        <div ref="logoWrapperRef" class="logo-wrapper">
+          <i class="logo-box">
+            <DragonBoatLogo></DragonBoatLogo>
           </i>
-          <span style="font-size: 15px">{{ userStore.userInfo?.name }}</span>
-          <el-popover
-            ref="popoverRef"
-            placement="bottom-end"
-            trigger="click"
-            :virtual-ref="buttonRef"
-            :hide-after="0"
+          <ElText>Dragon Boat</ElText>
+        </div>
+        <div v-show="!breadOverX" ref="breadWrapperRef" class="bread-wrapper">
+          <el-divider direction="vertical" />
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item
+              v-for="(p, index) in otherStore.getMatchedRoutesTitle"
+              :key="index"
+              >{{ p }}</el-breadcrumb-item
+            >
+          </el-breadcrumb>
+        </div>
+      </div>
+      <div class="head-right">
+        <div ref="infoIconsWrapperRef" class="info-icons-wrapper">
+          <IconsOperationPanel
+            v-show="!iconsOverX"
+            :refresh="{
+              switch: true,
+              handler: [refreshHandler]
+            }"
           >
-            <template #reference>
-              <div ref="buttonRef" v-click-outside="onClickOutside" style="margin: 0 10px">
-                <el-icon v-if="arrowTrigger" @click="arrowTrigger = !arrowTrigger"
-                  ><ArrowUpBold
-                /></el-icon>
-                <el-icon v-else @click="arrowTrigger = !arrowTrigger"><ArrowDownBold /></el-icon>
-              </div>
-            </template>
-            <template #default>
-              <ul>
-                <li @click="logout">
-                  <el-icon><SwitchButton /></el-icon>
-                  <span>退出登录</span>
-                </li>
-              </ul>
-            </template>
-          </el-popover>
+            <el-icon icon><Bell /></el-icon>
+            <el-icon @click="toggleFullScreen"
+              ><FullScreen v-if="!isFullScreen"></FullScreen> <OffScreen v-else></OffScreen
+            ></el-icon>
+          </IconsOperationPanel>
+          <div class="info">
+            <el-divider direction="vertical" />
+            <el-switch
+              ref="switchRef"
+              v-model="darkSwitch"
+              :active-action-icon="Sunrise"
+              :inactive-action-icon="MoonNight"
+              :before-change="beforeChange"
+            />
+            <el-divider direction="vertical" />
+            <i class="avatar">
+              <Avatar></Avatar>
+            </i>
+            <ElText>{{ userStore.userInfo?.name }}</ElText>
+            <el-popover
+              ref="popoverRef"
+              placement="bottom-end"
+              trigger="click"
+              :virtual-ref="buttonRef"
+              :hide-after="0"
+            >
+              <template #reference>
+                <div ref="buttonRef" v-click-outside="onClickOutside" style="margin: 0 10px">
+                  <el-icon v-if="arrowTrigger" @click="arrowTrigger = !arrowTrigger"
+                    ><ArrowUpBold
+                  /></el-icon>
+                  <el-icon v-else @click="arrowTrigger = !arrowTrigger"><ArrowDownBold /></el-icon>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li @click="logout">
+                    <el-icon><SwitchButton /></el-icon>
+                    <ElText>退出登录</ElText>
+                  </li>
+                </ul>
+              </template>
+            </el-popover>
+          </div>
         </div>
       </div>
     </div>
@@ -64,17 +79,52 @@
 </template>
 
 <script setup lang="ts">
-import DragonBoatLogo from '@components/svgs/DragonBoatLogo.vue'
+import DragonBoatLogo from '@components/svgs/DragonBoatLogo2.vue'
 import Avatar from '@components/svgs/Avatar.vue'
 import { ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { useOtherStore } from '@/stores/other'
-import { getCurrentInstance, onMounted, ref, onUnmounted } from 'vue'
+import { getCurrentInstance, onMounted, ref, onUnmounted, nextTick } from 'vue'
 import { delItem, getItem } from '@/utils/localStorage'
 import { LocalStorageKey } from '@/typings/enums'
 import router from '@/router'
-import { ClickOutside as vClickOutside, ElLoading } from 'element-plus'
+import { ClickOutside as vClickOutside, ElLoading, type SwitchInstance } from 'element-plus'
 import IconsOperationPanel from './IconsOperationPanel.vue'
+import { Sunrise, MoonNight } from '@element-plus/icons-vue'
+import { darkTheme } from '@hooks/useDarkTheme'
+import {
+  judgeOverXByEls as judgeBreadOverX,
+  removeObserver
+} from '@/hooks/useJudgeIsOverflowXByels'
+import { judgeOverXByEls as judgeIconsOverX } from '@/hooks/useJudgeIsOverflowXByels'
+const iconsOverX = ref<boolean>(false)
+const breadOverX = ref<boolean>(false)
+let breadResizeObserver = null
+let iconsResizeObserver = null
+nextTick(() => {
+  breadResizeObserver = judgeBreadOverX(
+    headWrapperRef.value,
+    [headLeftRef.value, infoIconsWrapperRef.value],
+    breadOverX
+  )
+  iconsResizeObserver = judgeIconsOverX(
+    headWrapperRef.value,
+    [logoWrapperRef.value, infoIconsWrapperRef.value],
+    iconsOverX
+  )
+})
+const headWrapperRef = ref<HTMLElement>()
+const headLeftRef = ref<HTMLElement>()
+const breadWrapperRef = ref<HTMLElement>()
+const infoIconsWrapperRef = ref<HTMLElement>()
+const logoWrapperRef = ref<HTMLElement>()
+const switchRef = ref<SwitchInstance>()
+const beforeChange = async () => {
+  await darkTheme(switchRef.value.$el)
+  return true
+}
+const darkSwitch = ref(true)
+
 const { $requests, $message } = getCurrentInstance()!.appContext.config.globalProperties
 const userStore = useUserStore()
 const otherStore = useOtherStore()
@@ -144,6 +194,7 @@ const logout = async () => {
 }
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', onfullscreenchange)
+  removeObserver([...breadResizeObserver, ...iconsResizeObserver])
 })
 onMounted(() => {
   getData()
@@ -155,52 +206,61 @@ onMounted(() => {
   height: var(--main-head-height);
   width: 100%;
   display: flex;
-  .head-left {
-    width: var(--main-side-width);
-    height: calc(100% - var(--main-head-height));
-    height: 100%;
-    display: flex;
-    align-items: center;
-    color: rgba(0, 0, 0, 0.6);
-    padding-left: var(--el-menu-base-level-padding);
-    box-sizing: border-box;
-    cursor: pointer;
-    .logo-box {
-      font-size: 32px;
-      margin-right: 5px;
-    }
-  }
-  .head-right {
+  .head-wrapper {
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    .bread {
+    .head-left {
       height: 100%;
       display: flex;
       align-items: center;
-    }
-    .operations {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      .operation {
+      color: rgba(0, 0, 0, 0.6);
+      .logo-wrapper {
         display: flex;
-        justify-content: space-between;
-        width: calc(var(--main-head-icon-size) * 4);
-        padding: 0 5px;
-        font-size: 20px;
+        cursor: pointer;
+        box-sizing: border-box;
+        padding-left: var(--el-menu-base-level-padding);
+
+        .logo-box {
+          font-size: 32px;
+          margin-right: 5px;
+          display: flex;
+          align-items: center;
+        }
       }
-    }
-    .info {
-      display: flex;
-      align-items: center;
-      height: 100%;
-      .avatar {
-        font-size: 32px;
+
+      .bread-wrapper {
+        height: 100%;
         display: flex;
         align-items: center;
-        margin: 0 10px;
       }
+    }
+    .head-right {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+
+      .info-icons-wrapper {
+        display: flex;
+        .info {
+          display: flex;
+          align-items: center;
+          height: 100%;
+          .avatar {
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+          }
+        }
+      }
+    }
+    .el-text {
+      width: max-content;
+      flex-shrink: 0;
+    }
+    .el-breadcrumb {
+      width: max-content;
+      flex-shrink: 0;
     }
   }
 }

@@ -5,8 +5,12 @@ import type {
   BackDataFormat,
   CompetitionInfoData,
   CompetitionItem,
+  CompetitionItemBaseInfo,
   CreateCompetitionData,
-  DataInAthletesType
+  CreateCompetitionItemData,
+  CreateCompetitionItemDataJSON,
+  DataInAthletesType,
+  UpdateCompetitionData
 } from '@/typings/common'
 /**获取邮箱验证码 */
 export const getLoginVerifyByEmail = (email: string) =>
@@ -74,7 +78,18 @@ export const postCompetitionCreateCom = (token: string, data: CreateCompetitionD
       Authorization: token
     }
   })
-
+export const addCompetitionGroupCreate = (token: string, data: CreateCompetitionItemDataJSON) =>
+  axios.post<BackDataFormat<null>>('/competition/group/create', data, {
+    headers: {
+      Authorization: token
+    }
+  })
+export const updateCompetition = (token: string, data: UpdateCompetitionData) =>
+  axios.put<BackDataFormat<null>>('/competition/updateCom', data, {
+    headers: {
+      Authorization: token
+    }
+  })
 export const deleteCompetitionDeleteCom = (token: string, id: number) =>
   axios.delete<BackDataFormat<null>>(`/competition/deleteCom?id=${id}`, {
     headers: {

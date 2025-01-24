@@ -6,28 +6,28 @@
           <div style="padding-left: 20px">
             <el-icon v-if="toggleLogo"><ArrowRightBold /></el-icon>
             <el-icon v-else><ArrowDownBold /></el-icon>
-            <span style="padding-left: 5px">搜索</span>
+            <ElText style="padding-left: 5px">搜索</ElText>
           </div>
         </template>
         <template #default>
           <div class="search-grid">
             <div class="search-grid-items">
-              <span class="search-grid-items-text">赛事名称：</span>
+              <ElText class="search-grid-items-text">赛事名称：</ElText>
               <el-input v-model="search" size="default" placeholder="赛事名称.." />
             </div>
             <div class="search-grid-items">
-              <span class="search-grid-items-text">赛事地点：</span>
+              <ElText class="search-grid-items-text">赛事地点：</ElText>
               <el-input v-model="search" size="default" placeholder="赛事地点.." />
             </div>
             <div class="search-grid-items">
-              <span class="search-grid-items-text">赛事状态：</span>
+              <ElText class="search-grid-items-text">赛事状态：</ElText>
               <el-select v-model="value" placeholder="Select" size="default">
                 <el-option :label="1" :value="1" />
                 <el-option :label="2" :value="2" />
               </el-select>
             </div>
             <div class="search-grid-items">
-              <span class="search-grid-items-text">日期：</span>
+              <ElText class="search-grid-items-text">日期：</ElText>
               <el-date-picker
                 v-model="value2"
                 type="daterange"
@@ -52,13 +52,13 @@
     <div class="comp-template">
       <el-card class="box-card">
         <div class="comp-header">
-          <span>赛事列表</span>
+          <ElText>赛事列表</ElText>
           <div>
             <el-button plain :icon="RefreshRight" size="small">刷新</el-button>
           </div>
         </div>
         <!-- <div slot="header" style="display: flex; justify-content: end">
-        <span style="align-self: center">龙舟大赛</span>
+        <ElText style="align-self: center">龙舟大赛</ElText>
         <el-input v-model="search" size="default" placeholder="赛事名称.." style="width: 30%" />
       </div> -->
         <!-- <el-table :data="dataFilter()"> -->

@@ -14,7 +14,7 @@
                   justify-content: center;
                 "
               >
-                <span style="font-size: 32px; color: #2d51e6; font-weight: 700">欢迎注册</span>
+                <ElText style="font-size: 32px; color: #2d51e6; font-weight: 700">欢迎注册</ElText>
                 <img ref="dragonBoatLogo" src="" alt="" style="object-fit: contain; height: 50px" />
               </div>
               <div class="register-frame-input">
@@ -128,7 +128,7 @@
                             :disabled="sendCodeIsDisable"
                             @click="sendCodeHandler"
                           >
-                            <span v-if="!sendCodeIsDisable">发送验证码</span>
+                            <ElText v-if="!sendCodeIsDisable">发送验证码</ElText>
                             <template v-if="sendCodeIsDisable">
                               <el-countdown
                                 format="已发送ss"
@@ -146,8 +146,8 @@
               <div v-if="isSwitch" class="register-frame-btns">
                 <div class="registerBtn btn" @click="next()">
                   <div style="display: flex; align-items: flex-end">
-                    <span style="font-size: var(--el-font-size-base); margin-left: 5px"
-                      >下一步</span
+                    <ElText style="font-size: var(--el-font-size-base); margin-left: 5px"
+                      >下一步</ElText
                     >
                     <el-icon><ArrowRight /></el-icon>
                   </div>
@@ -162,15 +162,17 @@
                 >
                   <div style="display: flex; align-items: flex-end">
                     <el-icon><ArrowLeft /></el-icon>
-                    <span style="font-size: var(--el-font-size-base); margin-left: 5px"
-                      >上一步</span
+                    <ElText style="font-size: var(--el-font-size-base); margin-left: 5px"
+                      >上一步</ElText
                     >
                   </div>
                 </div>
                 <div class="registerBtn btn" @click="submitForm(nextFormRef)">
                   <div style="display: flex; align-items: flex-end">
                     <el-icon><DocumentAdd /></el-icon>
-                    <span style="font-size: var(--el-font-size-base); margin-left: 5px">注册</span>
+                    <ElText style="font-size: var(--el-font-size-base); margin-left: 5px"
+                      >注册</ElText
+                    >
                   </div>
                 </div>
               </div>

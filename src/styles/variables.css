@@ -1,4 +1,4 @@
-:root {
+html {
   --login-input-width: 340px;
   --login-btn-gap: 25px;
   --main-side-width: 200px;
@@ -6,14 +6,16 @@
   --main-head-height: 48px;
   --main-tags-height: 30px;
   --Theme-Color: #4060c7;
-  --main-background-color: #ffffff;
+  --main-bg-color: #f0f2f5;
+  --main-tag-bg-color: #ffffff;
   --main-tag-border-color: #555555;
   --main-tag-chosen-backgroundColor: #var;
-  --main-tag-chosen-color: var(--main-background-color);
+  --main-tag-chosen-color: var(--main-tag-bg-color);
   --main-tag-basic-border-color: #555555;
   --main-tag-basic-color: #4060c7;
-  --main-tag-basic-backgroundColor: var(--main-background-color);
+  --main-tag-basic-backgroundColor: var(--main-tag-bg-color);
   --main-padding: 15px;
   --card-padding-left: var(--el-card-padding);
   --web-min-width: 960px;
+  --el-text-color-regular: #ffffff;
 }

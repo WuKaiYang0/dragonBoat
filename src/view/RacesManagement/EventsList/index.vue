@@ -7,28 +7,28 @@
             <div style="display: flex; gap: 10px">
               <ElImage :src="logo" fit="contain" style="width: 60px"></ElImage>
               <div class="flexbox">
-                <span class="text">{{ compListOne?.name }}</span>
+                <ElText class="text">{{ compListOne?.name }}</ElText>
                 <el-text type="info">{{ compListOne?.introduction }}</el-text>
               </div>
             </div>
             <div class="flexbox">
-              <span class="text">发布人</span>
+              <ElText class="text">发布人</ElText>
               <el-text type="info">admin</el-text>
             </div>
             <div class="flexbox">
-              <span class="text">比赛开始时间</span>
+              <ElText class="text">比赛开始时间</ElText>
               <el-text type="info">{{ compListOne?.startDate }}</el-text>
             </div>
             <div class="flexbox">
-              <span class="text">比赛截止时间</span>
+              <ElText class="text">比赛截止时间</ElText>
               <el-text type="info">{{ compListOne?.endDate }}</el-text>
             </div>
             <div class="flexbox">
-              <span class="text">报名截止时间</span>
+              <ElText class="text">报名截止时间</ElText>
               <el-text type="info">{{ compListOne?.deadline }}</el-text>
             </div>
             <div class="flexbox">
-              <span class="text">状态</span>
+              <ElText class="text">状态</ElText>
               <el-text v-if="compListOne?.status === 0" type="success">{{
                 CompItemStatus[`$${compListOne?.status}`]
               }}</el-text>

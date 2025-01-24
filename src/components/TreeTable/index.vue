@@ -1,6 +1,6 @@
 <template>
-  <div class="left-tree">
-    <div ref="leftTreeWrapperRef" class="tree-list">
+  <div class="tree-table-container">
+    <div ref="leftTreeWrapperRef" class="left-tree-container">
       <LeftTreeList
         v-model:model-value="datas.oneInData"
         :tree-source="treeSource"
@@ -16,7 +16,7 @@
       </LeftTreeList>
       <slot name="tree-default"></slot>
     </div>
-    <div class="leftTreeIconControl">
+    <div class="left-tree-icon-control">
       <ElButton
         ref="foldBtnRef"
         class="fold-btn"
@@ -26,32 +26,34 @@
         @click="fold"
       ></ElButton>
     </div>
-    <RightTable
-      ref="rightTableRef"
-      v-model:model-value="triggers"
-      :loading="loading"
-      :table-source="tableSource"
-      @change:data-of-table="emits('change:dataOfTable')"
-      @update:data-of-table:current-page="
-        (val: number) => emits('update:dataOfTable:currentPage', val)
-      "
-      @update:data-of-table:page-size="(val: number) => emits('update:dataOfTable:pageSize', val)"
-    >
-      <template #table-header>
-        <slot name="table-header"></slot>
-      </template>
-      <template #table-operation-icons>
-        <slot name="table-operation-icons"></slot>
-      </template>
-      <template #table>
-        <slot name="table"></slot>
-      </template>
-    </RightTable>
+    <div class="right-table-container">
+      <RightTable
+        ref="rightTableRef"
+        v-model:model-value="triggers"
+        :loading="loading"
+        :table-source="tableSource"
+        @change:data-of-table="emits('change:dataOfTable')"
+        @update:data-of-table:current-page="
+          (val: number) => emits('update:dataOfTable:currentPage', val)
+        "
+        @update:data-of-table:page-size="(val: number) => emits('update:dataOfTable:pageSize', val)"
+      >
+        <template #table-header>
+          <slot name="table-header"></slot>
+        </template>
+        <template #table-operation-icons>
+          <slot name="table-operation-icons"></slot>
+        </template>
+        <template #table>
+          <slot name="table"></slot>
+        </template>
+      </RightTable>
+    </div>
     <slot name="table-default"></slot>
   </div>
 </template>
 <script setup lang="ts">
-import { provide, ref, watch, type PropType } from 'vue'
+import { onMounted, provide, ref, watch, type PropType } from 'vue'
 import LeftTreeList from './LeftTreeList/index.vue'
 import RightTable from './RightTable/index.vue'
 import { ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue'
@@ -75,7 +77,7 @@ const fold = () => {
   }
   isFold.value = !isFold.value
   leftTreeWrapperRef.value.addEventListener('transitionend', () => {
-    if (rightTableRef.value.judgeIsOverflowX() && !isFold.value) {
+    if (triggers.value.isOverflowX && !isFold.value) {
       triggers.value.isShowMask = true
     } else {
       triggers.value.isShowMask = false
@@ -135,19 +137,18 @@ watch(
       }
     }
   },
-  {
-    deep: true
-  }
+  { once: true }
 )
 </script>
 <style scoped>
-.left-tree {
+.tree-table-container {
+  height: 100%;
   display: flex;
   position: relative;
   flex: 1;
   gap: 0px;
   --fold-btn-z-index: 2003;
-  .tree-list {
+  .left-tree-container {
     display: flex;
     justify-content: flex-end;
     flex-shrink: 0;
@@ -178,6 +179,11 @@ watch(
       }
     }
   }
+  .right-table-container {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+  }
   .fold-btn {
     position: absolute;
     top: 45%;
@@ -185,7 +191,7 @@ watch(
     z-index: var(--fold-btn-z-index);
     --fold-offset: -50%;
   }
-  .leftTreeIconControl {
+  .left-tree-icon-control {
     position: relative;
   }
 }

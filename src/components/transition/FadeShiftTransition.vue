@@ -1,17 +1,13 @@
 <template>
-  <Transition name="fade-shift" mode="out-in" @enter="enter" @before-enter="beforeEnter">
+  <Transition name="fade-shift" mode="out-in" @enter="enter">
     <slot></slot>
   </Transition>
 </template>
 <script setup lang="ts">
-import NProgress from 'nprogress'
-const beforeEnter = () => {
-  NProgress.configure({ showSpinner: false })
-  NProgress.start()
-}
 const enter = () => {
-  NProgress.done()
+  emits('enter')
 }
+const emits = defineEmits(['enter'])
 </script>
 <style scoped>
 .fade-shift-enter-active {

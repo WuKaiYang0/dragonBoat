@@ -10,12 +10,16 @@ body {
 }
 #app {
   height: 100vh;
-  /* min-width: var(--web-min-width); */
 }
 .clearfix::after {
   content: '';
   display: table;
   clear: both;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 @keyframes rotateY90 {
   100% {
@@ -55,9 +59,6 @@ body {
 .anticlockwise360 {
   animation: rotateY-360 0.5s forwards;
 }
-[icon] {
-  font-size: var(--main-head-icon-size) !important;
-}
 [m-20] {
   margin: 20px auto;
 }
@@ -77,4 +78,22 @@ li {
 }
 #nprogress .bar {
   background: var(--Theme-Color) !important;
+}
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+.dark::view-transition-old(root) {
+  z-index: -2;
+}
+::view-transition-old(root) {
+  z-index: 2;
+}
+html {
+  --tag-arrow-width: 35px;
 }

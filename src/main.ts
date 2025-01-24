@@ -1,12 +1,15 @@
 //导入CSS
 import '@styles/variables.css'
 import '@styles/common.css'
-import '@styles/elementUI.css'
 import 'nprogress/nprogress.css'
 import 'animate.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import '@styles/elementUI.css'
+
 //加入标签
 const metaNode = document.createElement('link')
-import logo from '../public/statics/logo.png'
+// import logo from '../public/statics/logo.png'
+import logo from '@assets/images/logo1.png'
 metaNode.setAttribute('href', logo)
 metaNode.setAttribute('rel', 'icon')
 document.querySelector('head').appendChild(metaNode)

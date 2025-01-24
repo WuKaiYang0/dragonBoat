@@ -83,12 +83,47 @@ export type DataInAthletesType = {
 }
 export type CreateCompetitionData = Omit<CompetitionBaseInfo, 'id' | 'status'>
 
-export type CompetitionItem = {
+export type UpdateCompetitionData = Omit<CompetitionBaseInfo, 'status'>
+
+export type CreateCompetitionItemData = {
+  competitionCategory: string
+  competitionId: number
+  name: string
+  competitionLength: string
+  category: string
+  numsType: number
+  nationNums: { nationId: number; amount: { lt: number; gt: number } }[]
+  gendersNums: { type: number; gender: number; numsgt: number; numslt: number }[]
+  minAge: number
+  maxAge: number
+}
+export type CreateCompetitionItemDataJSON = {
+  competitionCategory: string
+  competitionId: number
+  name: string
+  competitionLength: string
+  category: string
+  numsType: number
+  nationNums: string
+  gendersNums: string
+  minAge: number
+  maxAge: number
+}
+export type CompetitionItem = CompetitionItemBaseInfo & {
+  createTime: Time
+  updateTime: Time
+  numsType: number
+  nationNums: string
+  gendersNums: string
+  minAge: number
+  maxAge: number
+  competition_category_id: number
+  competition_length_id: number
+}
+export type CompetitionItemBaseInfo = {
+  id: number
   /**组别 */
   category: string
   competitionId: number
-  id: number
   name: string
-  createTime: Time
-  updateTime: Time
 }

@@ -16,13 +16,13 @@
         @click="menuItemClickHandler({ fullPath: rs.path, meta: rs.meta, name: rs.name })"
       >
         <el-icon v-if="rs.meta.icon"><component :is="rs.meta.icon" /></el-icon>
-        <span>{{ rs.meta.title }}</span>
+        <ElText>{{ rs.meta.title }}</ElText>
       </el-menu-item>
       <template v-else>
         <el-sub-menu :key="rs.name" :index="rs.path">
           <template #title>
             <el-icon v-if="rs.meta.icon"><component :is="rs.meta.icon" /></el-icon>
-            <span>{{ rs.meta.title }}</span>
+            <ElText>{{ rs.meta.title }}</ElText>
           </template>
           <!-- <template #title>{{ rs.name }}</template> -->
           <el-menu-item
@@ -35,7 +35,7 @@
           >
             <template #title>
               <el-icon v-if="r.meta.icon"><component :is="r.meta.icon" /></el-icon>
-              <span>{{ r.name }}</span>
+              <ElText>{{ r.name }}</ElText>
             </template>
           </el-menu-item>
         </el-sub-menu>

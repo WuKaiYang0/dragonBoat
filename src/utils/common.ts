@@ -55,3 +55,10 @@ export const locateRoute = (routes: Route[], pathName: string[]) => {
     }
   })(routes)
 }
+export const bounce = (callback: () => void, timeStamp: number) => {
+  let timer = null
+  return function () {
+    clearTimeout(timer)
+    timer = setTimeout(callback, timeStamp)
+  }
+}

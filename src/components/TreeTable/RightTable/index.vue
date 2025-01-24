@@ -20,13 +20,12 @@
         </template>
         <template #footer>
           <WrapperElPagination
+            ref="rightTablePaginationRef"
             v-model:current-page="currentPage"
             :page-size="tableSource.pageSize"
             :page-sizes="tableSource.pageSizes"
             :layout="
-              triggers.isOverflowX
-                ? 'total, prev, pager, next, '
-                : 'total, sizes, prev, pager, next, jumper'
+              isOver ? 'total, prev, pager, next' : 'total, sizes, prev, pager, next, jumper'
             "
             :total="tableSource.paginationTotals"
             size="small"
@@ -42,18 +41,16 @@
 
 <script setup lang="ts">
 import type { CardInstance, TableInstance } from 'element-plus'
+import { inject, nextTick, onMounted, onUnmounted, ref, watch, type PropType, type Ref } from 'vue'
+import WrapperElPagination from '@components/WrapperElPagination.vue'
 import {
-  getCurrentInstance,
-  inject,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  ref,
-  watch,
-  type PropType
-} from 'vue'
+  judgeOverXByEls,
+  removeObserver,
+  computedAllWidthByElOrNum
+} from '@/hooks/useJudgeIsOverflowXByels'
 const tableRef = ref<TableInstance>()
 const rightTable_elcard = ref<CardInstance>()
+const rightTablePaginationRef = ref<InstanceType<typeof WrapperElPagination>>()
 const fold = inject('foldLeftTreePanelFunc') as () => void
 const setHeight = () => {
   const elCardBodyEl = (rightTable_elcard.value.$el as HTMLElement).querySelector(
@@ -69,22 +66,12 @@ const onCurrentChange = (val: number) => {
   emits('update:dataOfTable:currentPage', val)
   emits('change:dataOfTable')
 }
-const setOverflowX = () => {
-  if (judgeIsOverflowX()) {
+// 当观察到变动时执行的回调函数
+const callback: MutationCallback = function (mutationsList) {
+  if ((mutationsList[0].target as HTMLElement).classList.contains('el-table--scrollable-x')) {
     triggers.value.isOverflowX = true
   } else {
     triggers.value.isOverflowX = false
-  }
-}
-const judgeIsOverflowX = () => {
-  const elCardBodyInner = (rightTable_elcard.value.$el as HTMLElement).querySelector(
-    '.el-card__body'
-  ).children[0] as HTMLElement
-  elCardBodyInner.offsetWidth
-  if (elCardBodyInner.classList.contains('el-table--scrollable-x')) {
-    return true
-  } else {
-    return false
   }
 }
 const maskClickHandler = () => {
@@ -133,25 +120,63 @@ const emits = defineEmits([
   'update:dataOfTable:currentPage',
   'update:dataOfTable:pageSize'
 ])
+const isOver = ref<boolean>(false)
 onMounted(async () => {
   window.addEventListener('resize', setHeight)
-  window.addEventListener('resize', setOverflowX)
 })
 onUnmounted(() => {
   window.removeEventListener('resize', setHeight)
-  window.removeEventListener('resize', setOverflowX)
+  // removeObserver(resizeObserver)
+  mutationObserver.disconnect()
 })
+let resizeObserver = null as ResizeObserver[]
+let mutationObserver = null as MutationObserver
 nextTick(() => {
   setHeight()
-  setOverflowX()
+  const elCardBodyInner = (rightTable_elcard.value.$el as HTMLElement).querySelector(
+    '.el-card__body'
+  ).children[0] as HTMLElement
+  mutationObserver = new MutationObserver(callback)
+  mutationObserver.observe(elCardBodyInner, { attributes: true, attributeFilter: ['class'] })
+  // const len = computedAllWidthByElOrNum([
+  //   (rightTablePaginationRef.value.$el as HTMLElement)?.children[0] as HTMLElement
+  // ])
+  // let timer = null
+  // const targetObserverCallback: ResizeObserverCallback = (entries) => {
+  //   if (entries.length > 1) {
+  //     throw new Error('只能监听一个目标元素')
+  //   }
+  //   const callback = () => {
+  //     console.log('@@')
+
+  //     const {
+  //       contentRect: { width }
+  //     } = entries[0]
+  //     if (width < len) {
+  //       isOver.value = true
+  //     } else {
+  //       isOver.value = false
+  //     }
+  //   }
+  //   clearTimeout(timer)
+  //   timer = setTimeout(callback, 100)
+  // }
+  // resizeObserver = new ResizeObserver(targetObserverCallback)
+  // resizeObserver.observe(rightTablePaginationRef.value.$el)
+  // console.log(rightTablePaginationRef.value.$el)
+
+  resizeObserver = judgeOverXByEls(
+    rightTablePaginationRef.value.$el,
+    [(rightTablePaginationRef.value.$el as HTMLElement)?.children[0] as HTMLElement],
+    isOver
+  )
 })
 defineExpose({
   rightTable_elcard,
   setHeight,
   expandedRows,
   tableRef,
-  foldAllExpandedRows,
-  judgeIsOverflowX
+  foldAllExpandedRows
 })
 </script>
 <style>
@@ -190,13 +215,8 @@ defineExpose({
         background: #f7f7f7 !important;
         font-weight: 600;
         color: #313437;
-      }
-      .table-header-label {
-        display: flex;
-        align-items: center;
-        .label {
-          margin: auto;
-        }
+        padding-left: 5px;
+        padding-right: 5px;
       }
       .table-header-label::before {
         content: '';
@@ -209,24 +229,12 @@ defineExpose({
         width: 1px;
       }
     }
-    /* .el-card {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      :deep(td) {
-        padding: 15px 10px;
-      }
-      :deep(.el-card__header) {
-        border-bottom: unset;
-        padding-bottom: 5px;
-        border-radius: 50%;
-      }
-      :deep(.el-card__body) {
-        padding-top: 0;
-      }
-      :deep(.el-table tr) {
-      }
-    } */
+    :deep(.el-table__inner-wrapper)::before {
+      content: unset;
+    }
+    :deep(.el-card__footer) {
+      position: relative;
+    }
   }
   .mask {
     position: absolute;

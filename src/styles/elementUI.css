@@ -1,3 +1,17 @@
+html.dark {
+  /* 自定义深色背景颜色 */
+  --el-menu-bg-color: #1d1e1f;
+  --main-bg-color: #080808;
+  --main-tag-bg-color: var(--el-bg-color);
+  --el-card-bg-color: #141414;
+  --el-bg-color-overlay: #141414;
+}
+html .el-switch.is-checked {
+  --el-switch-on-color: #f0f2f5;
+  .el-switch__core .el-switch__action {
+    color: #1d1e1f;
+  }
+}
 .el-input__wrapper,
 .el-button {
   backface-visibility: hidden;

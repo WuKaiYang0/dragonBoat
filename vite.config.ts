@@ -14,7 +14,7 @@ import dayjs from 'dayjs'
 const envPrefix = 'DB_'
 //解析src下所有目录，默认别名@ -> src;另外，tsconfig.json文件需要手动添加paths。
 const resolveAlias = (prefix: string) => {
-  let o = {}
+  const o = {}
   const dirNames = fs
     .readdirSync('./src', { withFileTypes: true })
     .filter((item) => item.isDirectory())

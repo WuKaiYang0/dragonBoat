@@ -3,15 +3,15 @@
     <div class="login-box">
       <div class="login-box-wrapper">
         <div class="login-box-image">
-          <!-- <span class="image-text text-main">龙舟管理系统</span> -->
-          <!-- <span class="image-text text-sub">Dragon Boat Management System</span> -->
+          <!-- <ElText class="image-text text-main">龙舟管理系统</ElText> -->
+          <!-- <ElText class="image-text text-sub">Dragon Boat Management System</ElText> -->
           <!-- <img src="/public/statics/login-d579ccd3.png" alt="" class="login-box-img" /> -->
           <!-- <img src="/public/statics/login_background.jpg" alt="" class="login-box-img" /> -->
         </div>
         <div class="login-frame-box" style="perspective: 100vh">
           <div class="login-box-image">
-            <span class="image-text text-main">龙舟竞赛管理系统</span>
-            <span class="image-text text-sub">Dragon Boat Race Management System</span>
+            <ElText class="image-text text-main">龙舟竞赛管理系统</ElText>
+            <ElText class="image-text text-sub">Dragon Boat Race Management System</ElText>
             <!-- <img src="/public/statics/login-d579ccd3.png" alt="" class="login-box-img" /> -->
             <!-- <img src="/public/statics/login_background.jpg" alt="" class="login-box-img" /> -->
           </div>
@@ -26,10 +26,10 @@
                 "
                 @click="submitForm(loginMode)"
               >
-                <span style="font-size: 32px; color: #2d51e6; font-weight: 700"
-                  >{{ loginMode }}登录</span
-                >
                 <img ref="dragonBoatLogo" src="" alt="" style="object-fit: contain; height: 50px" />
+                <ElText style="font-size: 32px; color: #2d51e6; font-weight: 700"
+                  >{{ loginMode }}登录</ElText
+                >
               </div>
               <div class="login-frame-input">
                 <el-form
@@ -81,7 +81,7 @@
                         :disabled="sendCodeIsDisable"
                         @click="sendCodeHandler"
                       >
-                        <span v-if="!sendCodeIsDisable">发送验证码</span>
+                        <ElText v-if="!sendCodeIsDisable">发送验证码</ElText>
                         <template v-if="sendCodeIsDisable">
                           <el-countdown
                             format="已发送ss"
@@ -133,18 +133,22 @@
               <div class="login-frame-btns">
                 <div class="registerBtn btn" @click="router.push('/register')">
                   <el-icon><DocumentAdd /></el-icon>
-                  <span style="font-size: var(--el-font-size-base); margin-left: 5px">注册</span>
+                  <ElText style="font-size: var(--el-font-size-base); margin-left: 5px"
+                    >注册</ElText
+                  >
                 </div>
                 <div class="loginBtn btn" @click="submitForm(loginMode)">
                   <el-icon><UserFilled /></el-icon>
-                  <span style="font-size: var(--el-font-size-base); margin-left: 5px">登录</span>
+                  <ElText style="font-size: var(--el-font-size-base); margin-left: 5px"
+                    >登录</ElText
+                  >
                 </div>
               </div>
               <el-divider content-position="center"
-                >换个登录方式？<span
+                >换个登录方式？<ElText
                   style="color: #2d51e6; cursor: pointer; font-weight: 700"
                   @click="switchLoginMode"
-                  >{{ loginMode === '账号' ? '邮箱' : '账号' }}</span
+                  >{{ loginMode === '账号' ? '邮箱' : '账号' }}</ElText
                 ></el-divider
               >
             </div>
@@ -158,7 +162,8 @@
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 import { User, Lock, DocumentAdd, UserFilled, Key } from '@element-plus/icons-vue'
-import dragonSvg from '@assets/svgs/dragboat_logo.svg'
+// import dragonSvg from '@assets/svgs/dragboat_logo.svg'
+import dragonSvg from '@assets/svgs/龙舟logo.svg'
 import { ElMessage, type FormInstance } from 'element-plus'
 import type { BackDataFormat } from '@/typings/common/index'
 import { type AxiosResponse } from 'axios'
